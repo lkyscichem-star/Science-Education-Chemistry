@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKDSE Chemistry: Organic Qualitative Analysis & Structure Deduction Lab</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0a3651',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #0f172a;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-white text-slate-900">
+
+    <!-- Header Bar -->
+    <header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-sky-600 to-blue-700 p-2.5 rounded-xl shadow-md shadow-sky-600/30 text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="bg-sky-100 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded border border-sky-200">HKDSE Chemistry</span>
+                        <span class="text-xs text-slate-500 font-medium">Curriculum Topic XV</span>
+                    </div>
+                    <h1 class="text-lg font-bold text-slate-900 tracking-tight">Organic Qualitative Analysis & Structure Deduction Lab</h1>
+                </div>
+            </div>
+
+            <!-- Global Score Metrics Bar -->
+            <div class="flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 shadow-sm text-xs sm:text-sm">
+                <div>
+                    <span class="text-slate-500 block text-[10px] uppercase font-bold">Total Attempts</span>
+                    <span id="global-attempts" class="font-bold text-amber-600 text-base">0</span>
+                </div>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div>
+                    <span class="text-slate-500 block text-[10px] uppercase font-bold">Correct Deductions</span>
+                    <span id="global-correct" class="font-bold text-emerald-600 text-base">0 / 0</span>
+                </div>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <div>
+                    <span class="text-slate-500 block text-[10px] uppercase font-bold">Accuracy</span>
+                    <span id="global-accuracy" class="font-bold text-sky-600 text-base">0%</span>
+                </div>
+                <div class="h-6 w-px bg-slate-200"></div>
+                <button id="reset-all-btn" onclick="resetAppProgress()" class="bg-white hover:bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg transition text-xs font-medium border border-slate-300 shadow-sm">
+                    Reset Lab
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 border-t border-slate-200 pt-2 pb-1.5 overflow-x-auto custom-scrollbar">
+            <button onclick="switchTab('phase1')" id="tab-phase1" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-sky-600 text-white shadow-md border border-sky-600">
+                <span class="w-5 h-5 rounded-full bg-white/20 text-white flex items-center justify-center text-xs font-bold">1</span>
+                Phase 1: Structure Matching
+            </button>
+            <button onclick="switchTab('phase2')" id="tab-phase2" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200">
+                <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">2</span>
+                Phase 2: Chemical Test Simulator
+            </button>
+            <button onclick="switchTab('phase3')" id="tab-phase3" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200">
+                <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">3</span>
+                Phase 3: Decision Tree & Workbench
+            </button>
+            <button onclick="switchTab('phase4')" id="tab-phase4" class="tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200">
+                <span class="w-5 h-5 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">4</span>
+                Phase 4: Common Pitfalls & Exit Ticket
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- PHASE 1 SECTION -->
+        <section id="sec-phase1" class="phase-section block space-y-6">
+            <div class="bg-slate-50/60 border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <span>Part A: Warm-up & Structure Recognition</span>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">3-Column Interactive Triplet Match</span>
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-1">
+                            Connect each <strong class="text-slate-900">Condensed Structural Formula</strong> with its corresponding textbook <strong class="text-slate-900">SVG Full Structural Diagram</strong> and its correct <strong class="text-slate-900">Homologous Series</strong>.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right">
+                            <span class="text-xs text-slate-500 block">Phase 1 Score</span>
+                            <span id="p1-score" class="text-lg font-bold text-sky-600">0 / 6 Matches</span>
+                        </div>
+                        <button onclick="resetPhase1()" class="bg-white hover:bg-slate-100 text-slate-700 text-xs px-3 py-2 rounded-lg border border-slate-300 transition shadow-sm font-medium">
+                            Reset Matches
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Phase 1 Feedback Panel -->
+                <div id="p1-feedback-box" class="mt-4 p-4 rounded-xl bg-sky-50 border border-sky-200 hidden text-sm">
+                    <div class="flex items-start gap-3">
+                        <div id="p1-feedback-icon" class="text-xl mt-0.5">💡</div>
+                        <div class="flex-grow">
+                            <div id="p1-feedback-title" class="font-semibold text-slate-900">Hint</div>
+                            <div id="p1-feedback-text" class="text-slate-700 mt-1 leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Columns Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <div class="space-y-3">
+                        <h3 class="text-xs uppercase tracking-wider font-bold text-sky-800 bg-sky-100/80 px-3 py-2 rounded-lg border border-sky-200 flex justify-between items-center">
+                            <span>1. Condensed Formula</span>
+                            <span class="text-[10px] text-sky-600 font-normal">Click to select</span>
+                        </h3>
+                        <div id="col1-container" class="space-y-2.5"></div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="text-xs uppercase tracking-wider font-bold text-blue-800 bg-blue-100/80 px-3 py-2 rounded-lg border border-blue-200 flex justify-between items-center">
+                            <span>2. Full Structural Diagram</span>
+                            <span class="text-[10px] text-blue-600 font-normal">HD SVG Graphics</span>
+                        </h3>
+                        <div id="col2-container" class="space-y-2.5"></div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h3 class="text-xs uppercase tracking-wider font-bold text-indigo-800 bg-indigo-100/80 px-3 py-2 rounded-lg border border-indigo-200 flex justify-between items-center">
+                            <span>3. Homologous Series</span>
+                            <span class="text-[10px] text-indigo-600 font-normal">Functional Group</span>
+                        </h3>
+                        <div id="col3-container" class="space-y-2.5"></div>
+                    </div>
+                </div>
+
+                <!-- Selection Action Bar -->
+                <div class="mt-6 p-4 rounded-xl bg-slate-100 border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-xs sm:text-sm text-slate-700 overflow-x-auto w-full sm:w-auto">
+                        <span class="font-semibold text-slate-600 whitespace-nowrap">Current Triplet Selection:</span>
+                        <span id="sel-col1" class="px-2.5 py-1 rounded bg-sky-200/80 border border-sky-300 text-sky-900 font-mono text-xs font-semibold">Not selected</span>
+                        <span>+</span>
+                        <span id="sel-col2" class="px-2.5 py-1 rounded bg-blue-200/80 border border-blue-300 text-blue-900 font-mono text-xs font-semibold">Not selected</span>
+                        <span>+</span>
+                        <span id="sel-col3" class="px-2.5 py-1 rounded bg-indigo-200/80 border border-indigo-300 text-indigo-900 font-mono text-xs font-semibold">Not selected</span>
+                    </div>
+                    <button id="p1-verify-btn" onclick="verifyPhase1Match()" disabled class="w-full sm:w-auto bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition text-sm">
+                        Verify Triplet Match
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 2 SECTION -->
+        <section id="sec-phase2" class="phase-section hidden space-y-6">
+            <div class="bg-slate-50/60 border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                <div class="pb-4 border-b border-slate-200">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span>Part B: Chemical Test Summary & Simulated Micro-Demonstrations</span>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">HKDSE Tests A – F</span>
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Explore standard HKDSE qualitative reagents, target functional groups, and positive physical observations.
+                    </p>
+                </div>
+
+                <!-- Reagent Quick Matrix Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+                    <div onclick="selectSimulatorTest('A')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-sky-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-sky-100 text-sky-800 font-bold px-2.5 py-1 rounded text-xs border border-sky-200">Reagent A</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Haloalkane Test</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">Heat with NaOH(alc), dil. HNO₃, AgNO₃(aq)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> Haloalkane (1-Bromopropane)</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Cream precipitate (AgBr)</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectSimulatorTest('B')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-emerald-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded text-xs border border-emerald-200">Reagent B</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Acid Test</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">Aqueous Sodium Hydrogencarbonate: NaHCO₃(aq)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> Carboxylic Acid (Propanoic Acid)</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Rapid effervescence (CO₂ gas)</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectSimulatorTest('C')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-purple-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-purple-100 text-purple-800 font-bold px-2.5 py-1 rounded text-xs border border-purple-200">Reagent C</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Aldehyde Test</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">Tollens' Reagent: [Ag(NH₃)₂]⁺ (Warm water bath)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> Aldehyde (Propanal)</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Silver Mirror deposited on tube</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectSimulatorTest('D')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-amber-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded text-xs border border-amber-200">Reagent D</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Carbonyl Group</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">2,4-Dinitrophenylhydrazine (2,4-DNPH)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> Carbonyl (Aldehyde / Ketone)</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Yellow / Orange / Red precipitate</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectSimulatorTest('E')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-orange-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-orange-100 text-orange-800 font-bold px-2.5 py-1 rounded text-xs border border-orange-200">Reagent E</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Oxidizing Agent</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">Acidified Potassium Dichromate: K₂Cr₂O₇/H⁺(aq)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> 1°/2° Alcohol or Aldehyde</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Orange to Green solution</p>
+                        </div>
+                    </div>
+
+                    <div onclick="selectSimulatorTest('F')" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-rose-500 hover:shadow-md cursor-pointer transition relative group">
+                        <div class="flex items-center justify-between">
+                            <span class="bg-rose-100 text-rose-800 font-bold px-2.5 py-1 rounded text-xs border border-rose-200">Reagent F</span>
+                            <span class="text-[10px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded font-medium">Unsaturation Test</span>
+                        </div>
+                        <h4 class="font-bold text-slate-900 mt-2 text-sm">Bromine in organic solvent: Br₂ (in dark)</h4>
+                        <div class="mt-3 text-xs space-y-1">
+                            <p class="text-slate-600"><strong class="text-slate-800">Target Group:</strong> Unsaturated Hydrocarbon (Alkene)</p>
+                            <p class="text-emerald-700 font-medium"><strong class="text-slate-800">Observation:</strong> Orange-brown to Colourless</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Canvas Visualizer -->
+                <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-6 shadow-md">
+                    <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                        <div class="w-full lg:w-1/2 flex flex-col items-center">
+                            <div class="relative w-full max-w-sm h-80 bg-slate-100 border border-slate-300 rounded-xl overflow-hidden flex items-center justify-center p-4 shadow-inner">
+                                <canvas id="sim-canvas" width="320" height="300" class="w-full h-full object-contain"></canvas>
+                                <div id="sim-status-tag" class="absolute top-3 left-3 bg-white/95 text-sky-800 border border-sky-300 text-xs px-3 py-1 rounded-full font-semibold shadow-sm flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+                                    <span>Ready to Simulate</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 mt-4 w-full max-w-sm justify-center">
+                                <button id="sim-play-btn" onclick="toggleSimPlay()" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm">
+                                    <span id="sim-play-text">Start Test</span>
+                                </button>
+                                <button onclick="resetSim()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 px-4 rounded-xl border border-slate-300 transition text-sm">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-1/2 space-y-4">
+                            <div>
+                                <label class="text-xs uppercase tracking-wider font-bold text-slate-500 block mb-1">Select Chemical Test</label>
+                                <select id="sim-test-select" onchange="onSimSelectChange()" class="w-full bg-slate-50 border border-slate-300 text-slate-900 font-medium text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-sky-500 shadow-sm">
+                                    <option value="A">Test A: 1-Bromopropane + NaOH(alc) / dil. HNO₃ / AgNO₃(aq)</option>
+                                    <option value="B">Test B: Propanoic Acid + NaHCO₃(aq)</option>
+                                    <option value="C" selected>Test C: Propanal + Tollens' Reagent (Heat)</option>
+                                    <option value="D">Test D: Propanone + 2,4-DNPH Reagent</option>
+                                    <option value="E">Test E: Propan-1-ol + Acidified K₂Cr₂O₇(aq) (Heat)</option>
+                                    <option value="F">Test F: Hex-1-ene + Br₂ in organic solvent</option>
+                                </select>
+                            </div>
+
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3 shadow-sm">
+                                <div>
+                                    <span class="text-xs text-slate-500 uppercase font-bold">Active Reaction</span>
+                                    <h3 id="sim-title" class="text-base font-bold text-sky-800 mt-0.5">Propanal with Warm Tollens' Reagent</h3>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 uppercase font-bold">Observation</span>
+                                    <p id="sim-observation" class="text-sm text-emerald-700 font-semibold mt-0.5">
+                                        Formation of a specular Silver Mirror deposited on inner tube walls.
+                                    </p>
+                                </div>
+                                <div class="pt-2 border-t border-slate-200">
+                                    <span class="text-xs text-slate-500 uppercase font-bold">HKDSE Chemical Equation</span>
+                                    <div id="sim-equation" class="font-mono text-xs text-amber-900 bg-amber-50 p-2.5 rounded-lg border border-amber-200 mt-1 overflow-x-auto font-semibold">
+                                        CH₃CH₂CHO + 2[Ag(NH₃)₂]⁺ + 3OH⁻ → CH₃CH₂COO⁻ + 2Ag(s) + 4NH₃ + 2H₂O
+                                    </div>
+                                </div>
+                                <div class="pt-2 border-t border-slate-200">
+                                    <span class="text-xs text-slate-500 uppercase font-bold">HKDSE Marking Concept</span>
+                                    <p id="sim-concept" class="text-xs text-slate-700 mt-1 leading-relaxed font-medium">
+                                        Aldehydes reduce diamminesilver(I) ions to metallic silver while being oxidized to carboxylates. Ketones lack the terminal hydrogen and do not react.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 3 SECTION -->
+        <section id="sec-phase3" class="phase-section hidden space-y-6">
+            <div class="bg-slate-50/60 border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                <div class="pb-4 border-b border-slate-200">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span>Part C: Deduction & Systematic Unknown Solving</span>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">HKDSE Decision Tree & Prediction Workbench</span>
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1 mb-4">
+                        Click any sample button below to highlight its exact flowchart path and select predicted condensed structures in the prediction matrix.
+                    </p>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-xs">
+                        <div class="p-2.5 rounded-xl bg-sky-50/90 border border-sky-200">
+                            <span class="font-bold text-sky-900 block">Test A</span>
+                            <span class="text-[11px] text-slate-600">NaOH/HNO₃/AgNO₃ (Haloalkane → Cream AgBr ppt)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-emerald-50/90 border border-emerald-200">
+                            <span class="font-bold text-emerald-900 block">Test B</span>
+                            <span class="text-[11px] text-slate-600">NaHCO₃(aq) (Carboxylic Acid → CO₂ Effervescence)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-200">
+                            <span class="font-bold text-purple-900 block">Test C</span>
+                            <span class="text-[11px] text-slate-600">Tollens' Reagent (Aldehyde → Silver Mirror)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-amber-50/90 border border-amber-200">
+                            <span class="font-bold text-amber-900 block">Test D</span>
+                            <span class="text-[11px] text-slate-600">2,4-DNPH (Carbonyl C=O → Orange/Red ppt)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-orange-50/90 border border-orange-200">
+                            <span class="font-bold text-orange-900 block">Test E</span>
+                            <span class="text-[11px] text-slate-600">K₂Cr₂O₇/H⁺ (Oxidation → Orange to Green)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-200">
+                            <span class="font-bold text-rose-900 block">Test F</span>
+                            <span class="text-[11px] text-slate-600">Br₂ in solvent (Alkene C=C → Decolorizes)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Part C Main Grid Layout -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+                    <!-- Left Side: Flowchart / Decision Tree (5 Cols) -->
+                    <div class="lg:col-span-5 bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200">
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Flowchart Path Highlight:</span>
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="traceFlowchart('P')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="P">P</button>
+                                <button onclick="traceFlowchart('Q')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="Q">Q</button>
+                                <button onclick="traceFlowchart('R')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="R">R</button>
+                                <button onclick="traceFlowchart('S')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="S">S</button>
+                                <button onclick="traceFlowchart('T')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="T">T</button>
+                                <button onclick="traceFlowchart('U')" class="flow-trace-btn px-2.5 py-1 rounded bg-slate-100 hover:bg-sky-100 text-slate-700 hover:text-sky-800 border border-slate-300 text-xs font-semibold transition" data-sample="U">U</button>
+                                <button onclick="resetFlowchart()" class="px-2 py-1 rounded bg-slate-200 text-slate-600 hover:text-slate-900 text-xs font-medium transition">Reset</button>
+                            </div>
+                        </div>
+
+                        <!-- Stacked Flowchart Nodes -->
+                        <div class="space-y-3 text-xs overflow-y-auto max-h-[620px] custom-scrollbar pr-1">
+                            <div id="flow-node-1" class="flow-node p-3 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded border border-sky-200">Step 1: NaHCO₃(aq)</span>
+                                    <span class="text-[10px] text-slate-500 font-medium">Carboxylic Acid Test</span>
+                                </div>
+                                <div class="mt-2 space-y-1.5">
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-emerald-700 block text-[11px]">YES → Effervescence CO₂:</strong>
+                                        Sample <strong class="text-slate-900">U (CH₃CH₂COOH)</strong>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-500">
+                                        <strong class="text-slate-700 block text-[11px]">NO → Proceed to Step 2:</strong>
+                                        Samples P, Q, R, S, T
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="flow-node-2" class="flow-node p-3 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded border border-sky-200">Step 2: Br₂ in organic solvent</span>
+                                    <span class="text-[10px] text-slate-500 font-medium">Unsaturation (C=C) Test</span>
+                                </div>
+                                <div class="mt-2 space-y-1.5">
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-emerald-700 block text-[11px]">YES → Rapidly Decolorizes:</strong>
+                                        Sample <strong class="text-slate-900">P (CH₂=CHCH₂CH₂CH₂CH₃)</strong>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-500">
+                                        <strong class="text-slate-700 block text-[11px]">NO → Proceed to Step 3:</strong>
+                                        Samples Q, R, S, T
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="flow-node-3" class="flow-node p-3 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded border border-sky-200">Step 3: NaOH / HNO₃ / AgNO₃</span>
+                                    <span class="text-[10px] text-slate-500 font-medium">Halogenoalkane Test</span>
+                                </div>
+                                <div class="mt-2 space-y-1.5">
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-emerald-700 block text-[11px]">YES → Cream Precipitate (AgBr):</strong>
+                                        Sample <strong class="text-slate-900">T (CH₃CH₂CH₂Br)</strong>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-500">
+                                        <strong class="text-slate-700 block text-[11px]">NO → Proceed to Step 4:</strong>
+                                        Samples Q, R, S
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="flow-node-4" class="flow-node p-3 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded border border-sky-200">Step 4: 2,4-DNPH Reagent</span>
+                                    <span class="text-[10px] text-slate-500 font-medium">Carbonyl (C=O) Test</span>
+                                </div>
+                                <div class="mt-2 space-y-1.5">
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-emerald-700 block text-[11px]">NO → No Orange Precipitate:</strong>
+                                        Sample <strong class="text-slate-900">Q (CH₃CH₂CH₂OH)</strong>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-500">
+                                        <strong class="text-slate-700 block text-[11px]">YES → Proceed to Step 5:</strong>
+                                        Samples R & S
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="flow-node-5" class="flow-node p-3 rounded-xl bg-slate-50 border border-slate-200 transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-sky-800 bg-sky-100 px-2 py-0.5 rounded border border-sky-200">Step 5: Warm Tollens' Reagent</span>
+                                    <span class="text-[10px] text-slate-500 font-medium">Aldehyde vs Ketone</span>
+                                </div>
+                                <div class="mt-2 grid grid-cols-2 gap-2">
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-emerald-700 block text-[11px]">YES → Silver Mirror:</strong>
+                                        Sample <strong class="text-slate-900">R (CH₃CH₂CHO)</strong>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border border-slate-200 text-slate-700">
+                                        <strong class="text-rose-700 block text-[11px]">NO → Remains Clear:</strong>
+                                        Sample <strong class="text-slate-900">S (CH₃COCH₃)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Workbench Table (7 Cols) -->
+                    <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                        <span>Part C Prediction Table</span>
+                                        <span class="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full font-bold">Samples P – U</span>
+                                    </h3>
+                                    <p class="text-xs text-slate-500 mt-0.5">
+                                        Select the predicted <strong class="text-slate-800">Condensed Structural Formula</strong> for each sample.
+                                    </p>
+                                </div>
+                                <button onclick="validateWorkbench()" class="bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white font-bold px-4 py-2 rounded-xl shadow-md transition text-xs whitespace-nowrap">
+                                    Validate Deductions
+                                </button>
+                            </div>
+
+                            <div class="mt-4 overflow-x-auto custom-scrollbar">
+                                <table class="w-full text-left text-xs border-collapse">
+                                    <thead>
+                                        <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] tracking-wider border-b border-slate-200">
+                                            <th class="p-2.5 font-bold">Sample</th>
+                                            <th class="p-2.5 font-bold">Test Results Summary</th>
+                                            <th class="p-2.5 font-bold min-w-[190px]">Predicted Condensed Structure</th>
+                                            <th class="p-2.5 font-bold text-center min-w-[130px]">Structure Diagram</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="workbench-tbody" class="divide-y divide-slate-200"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Reasoning Explanation Output Box -->
+                        <div id="workbench-rationale-box" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hidden space-y-3">
+                            <h4 class="text-xs font-bold text-sky-900 flex items-center gap-1.5">
+                                <span>🧪 HKDSE Detailed Chemical Reasoning & Solution Breakdown</span>
+                            </h4>
+                            <div id="workbench-rationale-content" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHASE 4 SECTION -->
+        <section id="sec-phase4" class="phase-section hidden space-y-6">
+            <div class="bg-slate-50/60 border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm">
+                <div class="pb-4 border-b border-slate-200">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <span>Part D1: HKDSE Qualitative Analysis Key Concepts & Common Pitfalls</span>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">Exam Marking Keys</span>
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        Avoid common errors that cost marks in HKDSE Chemistry structured qualitative analysis questions.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                            <span>⚠️ Pitfall 1</span>
+                            <span>Tollens' vs 2,4-DNPH Reagent</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong class="text-slate-900">2,4-DNPH</strong> tests broadly for any <strong class="text-sky-800">carbonyl group (C=O)</strong>, giving orange/red precipitates with both aldehydes and ketones. In contrast, <strong class="text-slate-900">Tollens' reagent</strong> specifically tests for <strong class="text-sky-800">aldehydes</strong> because aldehydes have a terminal hydrogen atom on the carbonyl carbon allowing oxidation to carboxylic acid derivatives.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                            <span>⚠️ Pitfall 2</span>
+                            <span>Role of Acidification with dil. HNO₃</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            In haloalkane testing, after heating with NaOH(alc) to hydrolyze the C-X bond, <strong class="text-slate-900">dilute HNO₃ MUST be added before AgNO₃(aq)</strong>. This neutralizes excess hydroxide ions (OH⁻). Unneutralized OH⁻ reacts with Ag⁺ to form a brown precipitate of Ag₂O, resulting in false positive observations.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                            <span>⚠️ Pitfall 3</span>
+                            <span>Electrophilic Addition vs Substitution</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong class="text-slate-900">Alkenes</strong> decolorize Br₂ in organic solvent <strong class="text-sky-800">rapidly even in the dark</strong> via electrophilic addition across C=C double bonds. In contrast, alkanes require <strong class="text-slate-900">ultraviolet (UV) light</strong> to undergo free radical substitution with bromine.
+                        </p>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+                        <div class="flex items-center gap-2 text-amber-700 text-xs font-bold uppercase tracking-wider">
+                            <span>⚠️ Pitfall 4</span>
+                            <span>Oxidation Behavior of Alcohols</span>
+                        </div>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            <strong class="text-slate-900">Primary alcohols</strong> are oxidized to aldehydes and then carboxylic acids. <strong class="text-slate-900">Secondary alcohols</strong> are oxidized to ketones. Both turn acidified K₂Cr₂O₇ from orange to green (Cr³⁺). <strong class="text-slate-900">Tertiary alcohols</strong> resist oxidation under standard lab conditions and remain orange.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exit Assessment Ticket -->
+            <div class="bg-slate-50/60 border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                            <span>Part D2: HKDSE Exit Assessment Ticket</span>
+                            <span class="text-xs bg-purple-100 text-purple-800 border border-purple-200 px-2.5 py-0.5 rounded-full font-semibold">3 Exam Practice Questions</span>
+                        </h3>
+                        <p class="text-sm text-slate-600 mt-0.5">
+                            Test your synthesis skills on authentic HKDSE structured exam questions.
+                        </p>
+                    </div>
+                    
+                    <div id="exit-score-badge" class="bg-white border border-slate-200 px-5 py-2.5 rounded-xl text-center shadow-sm">
+                        <span class="text-[10px] text-slate-500 uppercase block font-bold tracking-wider">Points Awarded</span>
+                        <span id="exit-score-text" class="text-base font-extrabold text-sky-700">0 / 9 Marks</span>
+                    </div>
+                </div>
+
+                <!-- Q1 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-sm">
+                    <div class="flex items-start justify-between gap-2">
+                        <h4 class="font-bold text-slate-900 text-sm">Question 1: Distinguishing Hex-1-ene and Hexane</h4>
+                        <span class="text-xs text-sky-800 font-semibold bg-sky-100 px-2 py-0.5 rounded border border-sky-200">3 Marks</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        State a chemical test to distinguish between sample X (Hex-1-ene) and sample Y (Hexane) in dark room conditions. State the reagent, conditions, and expected observations.
+                    </p>
+                    <div class="space-y-2 text-xs">
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q1" value="A" class="mt-0.5">
+                                <span>A) Add NaHCO₃(aq); Hex-1-ene gives effervescence while Hexane shows no reaction.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q1" value="B" class="mt-0.5">
+                                <span>B) Add Br₂ in organic solvent in the dark; Hex-1-ene rapidly decolorizes orange-brown Br₂ to colourless, while Hexane remains orange-brown.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q1" value="C" class="mt-0.5">
+                                <span>C) Add Tollens' reagent and heat; Hexane forms a silver mirror while Hex-1-ene remains clear.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-sm">
+                    <div class="flex items-start justify-between gap-2">
+                        <h4 class="font-bold text-slate-900 text-sm">Question 2: Distinguishing Propanal and Propanone</h4>
+                        <span class="text-xs text-sky-800 font-semibold bg-sky-100 px-2 py-0.5 rounded border border-sky-200">3 Marks</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Explain why 2,4-DNPH cannot be used to distinguish between Propanal and Propanone, and state the appropriate reagent to differentiate them.
+                    </p>
+                    <div class="space-y-2 text-xs">
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q2" value="A" class="mt-0.5">
+                                <span>A) Both compounds contain a carbonyl group (C=O) and form orange precipitates with 2,4-DNPH. Use Tollens' reagent (warmed) which gives a silver mirror ONLY with Propanal.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q2" value="B" class="mt-0.5">
+                                <span>B) Neither compound reacts with 2,4-DNPH. Use acidified K₂Cr₂O₇ which turns green with Propanone only.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q2" value="C" class="mt-0.5">
+                                <span>C) 2,4-DNPH reacts only with alcohols. Use NaHCO₃(aq) to distinguish them.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-3 shadow-sm">
+                    <div class="flex items-start justify-between gap-2">
+                        <h4 class="font-bold text-slate-900 text-sm">Question 3: Distinguishing Ethanoic Acid and Ethanol</h4>
+                        <span class="text-xs text-sky-800 font-semibold bg-sky-100 px-2 py-0.5 rounded border border-sky-200">3 Marks</span>
+                    </div>
+                    <p class="text-xs text-slate-700 leading-relaxed">
+                        Describe the simple test-tube reaction using NaHCO₃(aq) to distinguish Ethanoic Acid from Ethanol.
+                    </p>
+                    <div class="space-y-2 text-xs">
+                        <div class="space-y-2">
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q3" value="A" class="mt-0.5">
+                                <span>A) Ethanoic acid gives rapid effervescence; the evolved gas turns limewater milky (CO₂). Ethanol shows no observable change.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q3" value="B" class="mt-0.5">
+                                <span>B) Ethanol gives effervescence of hydrogen gas which relights a glowing splint. Ethanoic acid forms a cream precipitate.</span>
+                            </label>
+                            <label class="flex items-start gap-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 cursor-pointer hover:border-slate-300 transition">
+                                <input type="radio" name="exit-q3" value="C" class="mt-0.5">
+                                <span>C) Both react with NaHCO₃ to form orange-green color solutions.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button & Solutions Panel -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-200">
+                    <button onclick="submitExitTicket()" class="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold px-8 py-3 rounded-xl shadow-md transition text-sm">
+                        Submit Exit Assessment & Calculate Points
+                    </button>
+                    <button onclick="toggleExitModelAnswers()" id="btn-toggle-answers" class="hidden text-xs text-slate-600 hover:text-slate-900 underline font-medium">
+                        Toggle Model Solutions
+                    </button>
+                </div>
+
+                <div id="exit-solutions-panel" class="hidden p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-4 text-xs text-slate-700">
+                    <h4 class="font-bold text-amber-800 text-sm">📋 Model Answers & HKDSE Marking Scheme</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong class="text-sky-800 block mb-1">Q1 Model Solution (3 Marks):</strong>
+                            <p>Reagent: Br₂ in CH₂Cl₂ (organic solvent) in dark [1M]. Observation for Hex-1-ene: Orange-brown solution rapidly decolorizes [1M]. Observation for Hexane: Solution remains orange-brown [1M].</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong class="text-sky-800 block mb-1">Q2 Model Solution (3 Marks):</strong>
+                            <p>2,4-DNPH reacts with both C=O groups forming orange ppt [1M]. Appropriate reagent: Tollens' reagent [Ag(NH₃)₂]⁺, warmed [1M]. Propanal forms a silver mirror while Propanone gives no observable change [1M].</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <strong class="text-sky-800 block mb-1">Q3 Model Solution (3 Marks):</strong>
+                            <p>Add NaHCO₃(aq) to both test tubes [1M]. Ethanoic acid reacts giving rapid effervescence of gas that turns limewater milky (CO₂) [1M]. Ethanol shows no effervescence / no observable change [1M].</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Bar -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-4 text-center text-xs text-slate-600 mt-auto">
+        <p class="font-medium">HKDSE Chemistry Curriculum Topic XV: Chemistry of Carbon Compounds</p>
+        <p class="mt-1">Interactive Qualitative Analysis & Structural Deduction Laboratory Simulation | Prepared by Mr LEUNG Ka Yin</p>
+    </footer>
+
+    <script>
+        /* APPLICATION STATE */
+        const state = {
+            attempts: 0,
+            correct: 0,
+            p1: {
+                selectedCol1: null,
+                selectedCol2: null,
+                selectedCol3: null,
+                completedMatches: [],
+                attempts: 0
+            },
+            workbench: {
+                selections: {},
+                completed: false
+            },
+            sim: {
+                test: 'C',
+                animating: false,
+                progress: 0,
+                timer: null
+            }
+        };
+
+        /* SVG STRUCTURE GENERATORS */
+        function getPropanalSVG() {
+            return `<svg viewBox="0 0 320 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="90" x2="140" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="105" x2="70" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="75" x2="150" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="105" x2="150" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="226" y1="75" x2="226" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="234" y1="75" x2="234" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="240" y1="90" x2="275" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="20" fill="#e11d48">O</text>
+                <text x="290" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+            </svg>`;
+        }
+
+        function getPropanoicAcidSVG() {
+            return `<svg viewBox="0 0 340 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="90" x2="140" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="105" x2="70" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="75" x2="150" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="105" x2="150" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="226" y1="75" x2="226" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="234" y1="75" x2="234" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="240" y1="90" x2="270" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="20" fill="#e11d48">O</text>
+                <text x="295" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0284c7">OH</text>
+            </svg>`;
+        }
+
+        function getPropanoneSVG() {
+            return `<svg viewBox="0 0 320 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="90" x2="140" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="105" x2="70" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="146" y1="75" x2="146" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="154" y1="75" x2="154" y2="35" stroke="#0284c7" stroke-width="3"/>
+                <line x1="230" y1="75" x2="230" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="240" y1="90" x2="275" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="105" x2="230" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="20" fill="#e11d48">O</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="290" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+            </svg>`;
+        }
+
+        function getPropan1olSVG() {
+            return `<svg viewBox="0 0 340 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="90" x2="140" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="105" x2="70" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="75" x2="150" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="105" x2="150" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="75" x2="230" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="105" x2="230" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="240" y1="90" x2="270" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="295" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0284c7">OH</text>
+            </svg>`;
+        }
+
+        function getHex1eneSVG() {
+            return `<svg viewBox="0 0 520 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="84" x2="140" y2="84" stroke="#0284c7" stroke-width="3"/>
+                <line x1="80" y1="96" x2="140" y2="96" stroke="#0284c7" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="240" y1="90" x2="300" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="320" y1="90" x2="380" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="400" y1="90" x2="460" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="75" x2="150" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="75" x2="230" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="105" x2="230" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="310" y1="75" x2="310" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="310" y1="105" x2="310" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="390" y1="75" x2="390" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="390" y1="105" x2="390" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="470" y1="75" x2="470" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="480" y1="90" x2="505" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="470" y1="105" x2="470" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="310" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="390" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="470" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="310" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="310" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="390" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="390" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="470" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="515" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="470" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+            </svg>`;
+        }
+
+        function get1BromopropaneSVG() {
+            return `<svg viewBox="0 0 340 180" class="w-full h-16 mx-auto">
+                <line x1="80" y1="90" x2="140" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="160" y1="90" x2="220" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="75" x2="70" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="55" y1="90" x2="25" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <line x1="70" y1="105" x2="70" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="75" x2="150" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="150" y1="105" x2="150" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="75" x2="230" y2="35" stroke="#0f172a" stroke-width="3"/>
+                <line x1="230" y1="105" x2="230" y2="145" stroke="#0f172a" stroke-width="3"/>
+                <line x1="240" y1="90" x2="270" y2="90" stroke="#0f172a" stroke-width="3"/>
+                <text x="70" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="150" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="230" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">C</text>
+                <text x="70" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="15" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="70" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="150" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="28" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="230" y="162" text-anchor="middle" font-weight="bold" font-size="18" fill="#0f172a">H</text>
+                <text x="295" y="96" text-anchor="middle" font-weight="bold" font-size="18" fill="#d97706">Br</text>
+            </svg>`;
+        }
+
+        /* PHASE 1 DATA */
+        const p1Data = [
+            { id: 'c1', condensed: 'CH₃CH₂CHO', key: 'propanal', svg: getPropanalSVG, series: 'Aldehyde', name: 'Propanal' },
+            { id: 'c2', condensed: 'CH₃CH₂COOH', key: 'propanoic', svg: getPropanoicAcidSVG, series: 'Carboxylic acid', name: 'Propanoic acid' },
+            { id: 'c3', condensed: 'CH₃COCH₃', key: 'propanone', svg: getPropanoneSVG, series: 'Ketone', name: 'Propanone' },
+            { id: 'c4', condensed: 'CH₃CH₂CH₂OH', key: 'propanol', svg: getPropan1olSVG, series: 'Alcohol', name: 'Propan-1-ol' },
+            { id: 'c5', condensed: 'CH₂=CHCH₂CH₂CH₂CH₃', key: 'hexene', svg: getHex1eneSVG, series: 'Alkene', name: 'Hex-1-ene' },
+            { id: 'c6', condensed: 'CH₃CH₂CH₂Br', key: 'bromo', svg: get1BromopropaneSVG, series: 'Haloalkane', name: '1-Bromopropane' }
+        ];
+
+        /* WORKBENCH DATA (PART C) - STRICTLY MATCHING 603 ANSWER KEY */
+        const workbenchData = [
+            {
+                sample: "P",
+                results: "Test A (-), B (-), C (-), D (-), E (-), F (+ Rapidly decolorizes)",
+                correctCondensed: "CH₂=CHCH₂CH₂CH₂CH₃",
+                svg: getHex1eneSVG,
+                rationale: "Rapid decolorization of Br₂ in organic solvent in the dark proves C=C unsaturation (Alkene: CH₂=CHCH₂CH₂CH₂CH₃)."
+            },
+            {
+                sample: "Q",
+                results: "Test A (-), B (-), C (-), D (-), E (+ Orange to green), F (-)",
+                correctCondensed: "CH₃CH₂CH₂OH",
+                svg: getPropan1olSVG,
+                rationale: "Negative to NaHCO₃, 2,4-DNPH, Tollens', and Br₂. Positive dichromate oxidation confirms Primary Alcohol (CH₃CH₂CH₂OH)."
+            },
+            {
+                sample: "R",
+                results: "Test A (-), B (-), C (+ Silver Mirror), D (+ Orange ppt), E (+ Green), F (-)",
+                correctCondensed: "CH₃CH₂CHO",
+                svg: getPropanalSVG,
+                rationale: "Positive 2,4-DNPH confirms carbonyl group; positive Tollens' silver mirror specifically proves Aldehyde (CH₃CH₂CHO)."
+            },
+            {
+                sample: "S",
+                results: "Test A (-), B (-), C (-), D (+ Orange ppt), E (-), F (-)",
+                correctCondensed: "CH₃COCH₃",
+                svg: getPropanoneSVG,
+                rationale: "Positive 2,4-DNPH confirms carbonyl group; negative Tollens' and negative dichromate oxidation confirm Ketone (CH₃COCH₃)."
+            },
+            {
+                sample: "T",
+                results: "Test A (+ Cream ppt), B (-), C (-), D (-), E (-), F (-)",
+                correctCondensed: "CH₃CH₂CH₂Br",
+                svg: get1BromopropaneSVG,
+                rationale: "Hydrolysis followed by acidification with dil. HNO₃ and AgNO₃ yields cream AgBr precipitate, identifying Haloalkane (CH₃CH₂CH₂Br)."
+            },
+            {
+                sample: "U",
+                results: "Test A (-), B (+ Effervescence), C (-), D (-), E (-), F (-)",
+                correctCondensed: "CH₃CH₂COOH",
+                svg: getPropanoicAcidSVG,
+                rationale: "Rapid effervescence with NaHCO₃(aq) releasing CO₂ gas uniquely identifies Carboxylic Acid (CH₃CH₂COOH)."
+            }
+        ];
+
+        /* SIMULATION DATA */
+        const simData = {
+            A: {
+                title: "1-Bromopropane + NaOH(alc), dil. HNO₃, AgNO₃(aq)",
+                observation: "Formation of a Cream Precipitate (AgBr) settling at the lower test tube.",
+                equation: "CH₃CH₂CH₂Br + OH⁻ → CH₃CH₂CH₂OH + Br⁻  ;  Ag⁺(aq) + Br⁻(aq) → AgBr(s)",
+                concept: "Hydrolysis of halogenoalkane releases free halide ions (Br⁻). HNO₃ neutralizes excess OH⁻ to prevent Ag₂O brown precipitate formation.",
+                type: "precipitate",
+                color: "rgba(253, 230, 138, 0.95)",
+                heat: true
+            },
+            B: {
+                title: "Propanoic Acid + Aqueous NaHCO₃",
+                observation: "Rapid effervescence of colorless carbon dioxide gas bubbles (CO₂).",
+                equation: "CH₃CH₂COOH(aq) + HCO₃⁻(aq) → CH₃CH₂COO⁻(aq) + H₂O(l) + CO₂(g)",
+                concept: "Carboxylic acids liberate CO₂ gas from hydrogencarbonates. Gas turns limewater milky.",
+                type: "gas",
+                color: "rgba(186, 230, 253, 0.4)",
+                heat: false
+            },
+            C: {
+                title: "Propanal + Warm Tollens' Reagent [Ag(NH₃)₂]⁺",
+                observation: "Specular Silver Mirror deposition on test tube inner walls.",
+                equation: "CH₃CH₂CHO + 2[Ag(NH₃)₂]⁺ + 3OH⁻ → CH₃CH₂COO⁻ + 2Ag(s) + 4NH₃ + 2H₂O",
+                concept: "Aldehyde reduces diamminesilver(I) complex ion to silver metal. Ketones do not react.",
+                type: "mirror",
+                heat: true
+            },
+            D: {
+                title: "Propanal / Propanone + 2,4-DNPH Reagent",
+                observation: "Bright Orange-Red crystalline precipitate forms at lower tube.",
+                equation: "R-CHO / R-CO-R' + 2,4-DNPH → 2,4-dinitrophenylhydrazone (s) + H₂O",
+                concept: "Condensation reaction specific to carbonyl compounds (C=O). Identifies aldehydes and ketones.",
+                type: "precipitate",
+                color: "rgba(234, 88, 12, 0.95)",
+                heat: false
+            },
+            E: {
+                title: "Propan-1-ol + Acidified K₂Cr₂O₇(aq) (Warm)",
+                observation: "Color transition from Orange (Cr₂O₇²⁻) to Deep Green (Cr³⁺).",
+                equation: "3CH₃CH₂CH₂OH + 2Cr₂O₇²⁻ + 16H⁺ → 3CH₃CH₂COOH + 4Cr³⁺ + 11H₂O",
+                concept: "Primary alcohol is oxidized to carboxylic acid while dichromate(VI) ions are reduced to chromium(III) ions.",
+                type: "color",
+                startColor: [234, 88, 12],
+                endColor: [16, 185, 129],
+                heat: true
+            },
+            F: {
+                title: "Hex-1-ene + Br₂ in organic solvent (in dark)",
+                observation: "Rapid decolorization from Orange-Brown to Colourless.",
+                equation: "CH₂=CH(CH₂)₃CH₃ + Br₂ → CH₂Br-CHBr(CH₂)₃CH₃",
+                concept: "Electrophilic addition across the C=C double bond without requiring UV light.",
+                type: "color",
+                startColor: [194, 65, 12],
+                endColor: [248, 250, 252],
+                heat: false
+            }
+        };
+
+        /* TAB SWITCHING ROUTINE */
+        function switchTab(tabId) {
+            document.querySelectorAll('.phase-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 border border-slate-200';
+            });
+
+            document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (activeTab) {
+                activeTab.className = 'tab-btn px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl whitespace-nowrap transition flex items-center gap-2 bg-sky-600 text-white shadow-md border border-sky-600';
+            }
+        }
+
+        /* PHASE 1 METHODS */
+        function initPhase1() {
+            const col1 = document.getElementById('col1-container');
+            const col2 = document.getElementById('col2-container');
+            const col3 = document.getElementById('col3-container');
+
+            if (!col1 || !col2 || !col3) return;
+
+            col1.innerHTML = '';
+            col2.innerHTML = '';
+            col3.innerHTML = '';
+
+            const shuffled2 = [...p1Data].sort(() => 0.5 - Math.random());
+            const shuffled3 = [...p1Data].sort(() => 0.5 - Math.random());
+
+            p1Data.forEach(item => {
+                col1.innerHTML += `
+                    <div id="p1-c1-${item.key}" onclick="selectP1Col('col1', '${item.key}')" 
+                        class="p1-card p-3 rounded-xl bg-white border border-slate-200 hover:border-sky-500 hover:bg-sky-50/50 cursor-pointer transition shadow-sm flex items-center justify-between font-medium">
+                        <span class="font-mono text-xs font-bold text-sky-900">${item.condensed}</span>
+                        <span class="p1-check hidden text-emerald-600 font-bold">✓</span>
+                    </div>
+                `;
+            });
+
+            shuffled2.forEach(item => {
+                col2.innerHTML += `
+                    <div id="p1-c2-${item.key}" onclick="selectP1Col('col2', '${item.key}')" 
+                        class="p1-card p-3 rounded-xl bg-white border border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 cursor-pointer transition shadow-sm flex flex-col items-center justify-center">
+                        ${item.svg()}
+                        <span class="p1-check hidden text-emerald-600 font-bold mt-1">✓</span>
+                    </div>
+                `;
+            });
+
+            shuffled3.forEach(item => {
+                col3.innerHTML += `
+                    <div id="p1-c3-${item.key}" onclick="selectP1Col('col3', '${item.key}')" 
+                        class="p1-card p-3 rounded-xl bg-white border border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50 cursor-pointer transition shadow-sm flex items-center justify-between font-medium">
+                        <span class="font-semibold text-xs text-indigo-900">${item.series}</span>
+                        <span class="p1-check hidden text-emerald-600 font-bold">✓</span>
+                    </div>
+                `;
+            });
+        }
+
+        function selectP1Col(col, key) {
+            if (state.p1.completedMatches.includes(key)) return;
+
+            if (col === 'col1') state.p1.selectedCol1 = key;
+            if (col === 'col2') state.p1.selectedCol2 = key;
+            if (col === 'col3') state.p1.selectedCol3 = key;
+
+            p1Data.forEach(item => {
+                const el1 = document.getElementById(`p1-c1-${item.key}`);
+                const el2 = document.getElementById(`p1-c2-${item.key}`);
+                const el3 = document.getElementById(`p1-c3-${item.key}`);
+
+                if (el1 && !state.p1.completedMatches.includes(item.key)) {
+                    const isSel = state.p1.selectedCol1 === item.key;
+                    el1.className = `p1-card p-3 rounded-xl border cursor-pointer transition shadow-sm flex items-center justify-between ${
+                        isSel ? 'bg-sky-600 text-white border-sky-700 font-bold shadow-md scale-[1.02] ring-2 ring-sky-300' : 'bg-white border-slate-200 hover:border-sky-500 hover:bg-sky-50/50'
+                    }`;
+                }
+                if (el2 && !state.p1.completedMatches.includes(item.key)) {
+                    const isSel = state.p1.selectedCol2 === item.key;
+                    el2.className = `p1-card p-3 rounded-xl border cursor-pointer transition shadow-sm flex flex-col items-center justify-center ${
+                        isSel ? 'bg-blue-600 border-blue-700 shadow-md scale-[1.02] ring-2 ring-blue-300' : 'bg-white border-slate-200 hover:border-blue-500 hover:bg-blue-50/50'
+                    }`;
+                }
+                if (el3 && !state.p1.completedMatches.includes(item.key)) {
+                    const isSel = state.p1.selectedCol3 === item.key;
+                    el3.className = `p1-card p-3 rounded-xl border cursor-pointer transition shadow-sm flex items-center justify-between ${
+                        isSel ? 'bg-indigo-600 text-white border-indigo-700 font-bold shadow-md scale-[1.02] ring-2 ring-indigo-300' : 'bg-white border-slate-200 hover:border-indigo-500 hover:bg-indigo-50/50'
+                    }`;
+                }
+            });
+
+            document.getElementById('sel-col1').innerText = state.p1.selectedCol1 ? p1Data.find(x => x.key === state.p1.selectedCol1).condensed : 'Not selected';
+            document.getElementById('sel-col2').innerText = state.p1.selectedCol2 ? p1Data.find(x => x.key === state.p1.selectedCol2).name : 'Not selected';
+            document.getElementById('sel-col3').innerText = state.p1.selectedCol3 ? p1Data.find(x => x.key === state.p1.selectedCol3).series : 'Not selected';
+
+            const verifyBtn = document.getElementById('p1-verify-btn');
+            verifyBtn.disabled = !(state.p1.selectedCol1 && state.p1.selectedCol2 && state.p1.selectedCol3);
+        }
+
+        function verifyPhase1Match() {
+            const { selectedCol1, selectedCol2, selectedCol3 } = state.p1;
+            state.attempts++;
+            state.p1.attempts++;
+
+            const feedbackBox = document.getElementById('p1-feedback-box');
+            const feedbackTitle = document.getElementById('p1-feedback-title');
+            const feedbackText = document.getElementById('p1-feedback-text');
+            feedbackBox.classList.remove('hidden');
+
+            if (selectedCol1 === selectedCol2 && selectedCol2 === selectedCol3) {
+                state.correct++;
+                state.p1.completedMatches.push(selectedCol1);
+
+                const item = p1Data.find(x => x.key === selectedCol1);
+
+                ['c1', 'c2', 'c3'].forEach(prefix => {
+                    const el = document.getElementById(`p1-${prefix}-${selectedCol1}`);
+                    if (el) {
+                        el.className = 'p1-card p-3 rounded-xl bg-emerald-50 border-2 border-emerald-500 text-slate-900 shadow-sm flex items-center justify-between opacity-90';
+                        const chk = el.querySelector('.p1-check');
+                        if (chk) chk.classList.remove('hidden');
+                    }
+                });
+
+                feedbackTitle.innerText = `Correct Match! ${item.name} (${item.condensed})`;
+                feedbackTitle.className = 'font-bold text-emerald-800';
+                feedbackText.innerText = `Great job! ${item.condensed} correctly matches the textbook SVG structure for ${item.name} and belongs to the ${item.series} homologous series.`;
+
+                state.p1.selectedCol1 = null;
+                state.p1.selectedCol2 = null;
+                state.p1.selectedCol3 = null;
+
+                document.getElementById('sel-col1').innerText = 'Not selected';
+                document.getElementById('sel-col2').innerText = 'Not selected';
+                document.getElementById('sel-col3').innerText = 'Not selected';
+                document.getElementById('p1-verify-btn').disabled = true;
+
+                document.getElementById('p1-score').innerText = `${state.p1.completedMatches.length} / 6 Matches`;
+            } else {
+                feedbackTitle.innerText = 'Mismatch Detected';
+                feedbackTitle.className = 'font-bold text-rose-700';
+                feedbackText.innerText = 'Check functional groups carefully! Ensure the structural formula matches the condensed atom connections.';
+            }
+
+            updateGlobalMetrics();
+        }
+
+        function resetPhase1() {
+            state.p1.selectedCol1 = null;
+            state.p1.selectedCol2 = null;
+            state.p1.selectedCol3 = null;
+            state.p1.completedMatches = [];
+            document.getElementById('p1-feedback-box').classList.add('hidden');
+            document.getElementById('p1-score').innerText = '0 / 6 Matches';
+            initPhase1();
+        }
+
+        /* PHASE 2 SIMULATOR METHODS */
+        function selectSimulatorTest(testKey) {
+            state.sim.test = testKey;
+            document.getElementById('sim-test-select').value = testKey;
+            onSimSelectChange();
+            switchTab('phase2');
+        }
+
+        function onSimSelectChange() {
+            const key = document.getElementById('sim-test-select').value;
+            state.sim.test = key;
+            const info = simData[key];
+
+            document.getElementById('sim-title').innerText = info.title;
+            document.getElementById('sim-observation').innerText = info.observation;
+            document.getElementById('sim-equation').innerText = info.equation;
+            document.getElementById('sim-concept').innerText = info.concept;
+
+            resetSim();
+        }
+
+        function resetSim() {
+            state.sim.animating = false;
+            state.sim.progress = 0;
+            if (state.sim.timer) cancelAnimationFrame(state.sim.timer);
+
+            document.getElementById('sim-play-text').innerText = 'Start Test';
+            document.getElementById('sim-status-tag').innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-sky-500 animate-ping"></span>
+                <span>Ready to Simulate</span>
+            `;
+
+            drawCanvasFrame(0);
+        }
+
+        function toggleSimPlay() {
+            if (state.sim.animating) {
+                state.sim.animating = false;
+                document.getElementById('sim-play-text').innerText = 'Resume';
+            } else {
+                state.sim.animating = true;
+                document.getElementById('sim-play-text').innerText = 'Pause';
+                document.getElementById('sim-status-tag').innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Reaction in Progress...</span>
+                `;
+                animateSimLoop();
+            }
+        }
+
+        function animateSimLoop() {
+            if (!state.sim.animating) return;
+
+            state.sim.progress += 0.008;
+            if (state.sim.progress >= 1) {
+                state.sim.progress = 1;
+                state.sim.animating = false;
+                document.getElementById('sim-play-text').innerText = 'Replay Test';
+                document.getElementById('sim-status-tag').innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <span>Reaction Complete</span>
+                `;
+            }
+
+            drawCanvasFrame(state.sim.progress);
+
+            if (state.sim.animating) {
+                state.sim.timer = requestAnimationFrame(animateSimLoop);
+            }
+        }
+
+        function drawCanvasFrame(p) {
+            const canvas = document.getElementById('sim-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const testKey = state.sim.test;
+            const info = simData[testKey];
+
+            // Bunsen Burner Flame
+            if (info.heat && p > 0.05) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(w / 2 - 15, h - 10);
+                ctx.quadraticCurveTo(w / 2, h - 35 - Math.random() * 8, w / 2 + 15, h - 10);
+                ctx.fillStyle = 'rgba(2, 132, 199, 0.8)';
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(w / 2 - 8, h - 10);
+                ctx.quadraticCurveTo(w / 2, h - 25 - Math.random() * 5, w / 2 + 8, h - 10);
+                ctx.fillStyle = 'rgba(253, 224, 71, 0.9)';
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Test Tube Base Dimensions
+            const tubeX = w / 2 - 25;
+            const tubeY = 30;
+            const tubeW = 50;
+            const tubeH = 200;
+            const radius = 25;
+
+            const liquidTop = tubeY + 100;
+            const liquidBottom = tubeY + tubeH - radius;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(tubeX + 5, liquidTop);
+            ctx.lineTo(tubeX + tubeW - 5, liquidTop);
+            ctx.lineTo(tubeX + tubeW - 5, liquidBottom);
+            ctx.arc(tubeX + radius, liquidBottom, radius - 5, 0, Math.PI);
+            ctx.lineTo(tubeX + 5, liquidTop);
+            ctx.closePath();
+
+            if (info.type === 'color') {
+                const r = Math.round(info.startColor[0] + (info.endColor[0] - info.startColor[0]) * p);
+                const g = Math.round(info.startColor[1] + (info.endColor[1] - info.startColor[1]) * p);
+                const b = Math.round(info.startColor[2] + (info.endColor[2] - info.startColor[2]) * p);
+                ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.85)`;
+            } else {
+                ctx.fillStyle = info.color || 'rgba(224, 242, 254, 0.6)';
+            }
+            ctx.fill();
+
+            // Precipitate Layer
+            if (info.type === 'precipitate' && p > 0.1) {
+                const pptHeight = (tubeH - 120) * (p - 0.1) * 0.4;
+                ctx.fillStyle = info.color;
+                ctx.beginPath();
+                ctx.arc(tubeX + radius, liquidBottom, radius - 6, 0, Math.PI);
+                ctx.rect(tubeX + 6, liquidBottom - pptHeight, tubeW - 12, pptHeight);
+                ctx.fill();
+            }
+
+            // Gas Effervescence Bubbles
+            if (info.type === 'gas' && p > 0.05) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                const numBubbles = Math.floor(p * 20);
+                for (let i = 0; i < numBubbles; i++) {
+                    const bx = tubeX + 10 + Math.random() * (tubeW - 20);
+                    const by = liquidBottom - Math.random() * (liquidBottom - liquidTop);
+                    const br = 2 + Math.random() * 3;
+                    ctx.beginPath();
+                    ctx.arc(bx, by, br, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Silver Mirror Layer
+            if (info.type === 'mirror' && p > 0.1) {
+                const mirrorAlpha = (p - 0.1) / 0.9;
+                ctx.strokeStyle = `rgba(148, 163, 184, ${mirrorAlpha})`;
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(tubeX + 3, liquidTop + 10);
+                ctx.lineTo(tubeX + 3, liquidBottom);
+                ctx.arc(tubeX + radius, liquidBottom, radius - 3, Math.PI, 0, true);
+                ctx.lineTo(tubeX + tubeW - 3, liquidTop + 10);
+                ctx.stroke();
+
+                ctx.strokeStyle = `rgba(255, 255, 255, ${mirrorAlpha * 0.9})`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(tubeX + 5, liquidTop + 15);
+                ctx.lineTo(tubeX + 5, liquidBottom - 5);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+
+            // Test Tube Glass Contour
+            ctx.save();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#64748b';
+            ctx.beginPath();
+            ctx.strokeRect(tubeX - 4, tubeY - 5, tubeW + 8, 8);
+            ctx.moveTo(tubeX, tubeY);
+            ctx.lineTo(tubeX, tubeY + tubeH - radius);
+            ctx.arc(tubeX + radius, tubeY + tubeH - radius, radius, Math.PI, 0, true);
+            ctx.lineTo(tubeX + tubeW, tubeY);
+            ctx.stroke();
+
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            ctx.moveTo(tubeX + 6, tubeY + 10);
+            ctx.lineTo(tubeX + 6, tubeY + tubeH - radius);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        /* PHASE 3 DECISION TREE & WORKBENCH METHODS */
+        function traceFlowchart(sample) {
+            document.querySelectorAll('.flow-node').forEach(node => {
+                node.classList.remove('ring-2', 'ring-sky-500', 'bg-sky-50/90', 'shadow-md');
+                node.classList.add('bg-slate-50', 'opacity-60');
+            });
+            document.querySelectorAll('.flow-trace-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-600', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.querySelector(`.flow-trace-btn[data-sample="${sample}"]`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                activeBtn.classList.add('bg-sky-600', 'text-white');
+            }
+
+            const pathMap = {
+                'U': [1],
+                'P': [1, 2],
+                'T': [1, 2, 3],
+                'Q': [1, 2, 3, 4],
+                'R': [1, 2, 3, 4, 5],
+                'S': [1, 2, 3, 4, 5]
+            };
+
+            const activeNodes = pathMap[sample] || [];
+            activeNodes.forEach(nodeId => {
+                const node = document.getElementById(`flow-node-${nodeId}`);
+                if (node) {
+                    node.classList.remove('opacity-60', 'bg-slate-50');
+                    node.classList.add('bg-sky-50/90', 'ring-2', 'ring-sky-500', 'shadow-md');
+                }
+            });
+        }
+
+        function resetFlowchart() {
+            document.querySelectorAll('.flow-node').forEach(node => {
+                node.classList.remove('ring-2', 'ring-sky-500', 'bg-sky-50/90', 'opacity-60', 'shadow-md');
+                node.classList.add('bg-slate-50');
+            });
+            document.querySelectorAll('.flow-trace-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-600', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+        }
+
+        function renderWorkbench() {
+            const tbody = document.getElementById('workbench-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            const options = [
+                'Select prediction...',
+                'CH₂=CHCH₂CH₂CH₂CH₃',
+                'CH₃CH₂CHO',
+                'CH₃COCH₃',
+                'CH₃CH₂CH₂OH',
+                'CH₃CH₂COOH',
+                'CH₃CH₂CH₂Br'
+            ];
+
+            workbenchData.forEach(item => {
+                const selectedVal = state.workbench.selections[item.sample] || '';
+                let svgDiagram = '<span class="text-slate-400 italic">Select structure</span>';
+
+                if (selectedVal) {
+                    const matchObj = workbenchData.find(x => x.correctCondensed === selectedVal);
+                    if (matchObj) {
+                        svgDiagram = matchObj.svg();
+                    }
+                }
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="p-2.5 font-bold text-sky-900">${item.sample}</td>
+                        <td class="p-2.5 text-slate-600 text-[11px]">${item.results}</td>
+                        <td class="p-2.5">
+                            <select onchange="onWorkbenchSelect('${item.sample}', this.value)" class="w-full bg-white border border-slate-300 rounded-lg p-1.5 font-mono text-xs focus:border-sky-500 focus:outline-none">
+                                ${options.map(opt => `<option value="${opt === 'Select prediction...' ? '' : opt}" ${selectedVal === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                            </select>
+                        </td>
+                        <td class="p-2.5 text-center">${svgDiagram}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function onWorkbenchSelect(sample, value) {
+            state.workbench.selections[sample] = value;
+            renderWorkbench();
+        }
+
+        function validateWorkbench() {
+            state.attempts++;
+            let correctCount = 0;
+
+            workbenchData.forEach(item => {
+                if (state.workbench.selections[item.sample] === item.correctCondensed) {
+                    correctCount++;
+                }
+            });
+
+            if (correctCount === 6) {
+                state.correct += 6;
+                state.workbench.completed = true;
+            }
+
+            const rationaleBox = document.getElementById('workbench-rationale-box');
+            const rationaleContent = document.getElementById('workbench-rationale-content');
+            rationaleBox.classList.remove('hidden');
+
+            rationaleContent.innerHTML = workbenchData.map(item => `
+                <div class="p-2.5 rounded-lg bg-white border border-slate-200">
+                    <strong class="text-sky-800 block">Sample ${item.sample}: ${item.correctCondensed}</strong>
+                    <p class="text-[11px] text-slate-600 mt-1">${item.rationale}</p>
+                </div>
+            `).join('');
+
+            updateGlobalMetrics();
+        }
+
+        /* PHASE 4 EXIT TICKET METHODS */
+        function submitExitTicket() {
+            state.attempts++;
+            let score = 0;
+
+            const q1 = document.querySelector('input[name="exit-q1"]:checked')?.value;
+            const q2 = document.querySelector('input[name="exit-q2"]:checked')?.value;
+            const q3 = document.querySelector('input[name="exit-q3"]:checked')?.value;
+
+            if (q1 === 'B') score += 3;
+            if (q2 === 'A') score += 3;
+            if (q3 === 'A') score += 3;
+
+            document.getElementById('exit-score-text').innerText = `${score} / 9 Marks`;
+            document.getElementById('btn-toggle-answers').classList.remove('hidden');
+            document.getElementById('exit-solutions-panel').classList.remove('hidden');
+
+            if (score === 9) state.correct += 3;
+            updateGlobalMetrics();
+        }
+
+        function toggleExitModelAnswers() {
+            const panel = document.getElementById('exit-solutions-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        /* GLOBAL METRICS & RESET */
+        function updateGlobalMetrics() {
+            document.getElementById('global-attempts').innerText = state.attempts;
+            document.getElementById('global-correct').innerText = `${state.correct} / 15`;
+            const accuracy = state.attempts > 0 ? Math.round((state.correct / (state.attempts * 3)) * 100) : 0;
+            document.getElementById('global-accuracy').innerText = `${Math.min(100, accuracy)}%`;
+        }
+
+        function resetAppProgress() {
+            state.attempts = 0;
+            state.correct = 0;
+            state.workbench.selections = {};
+            state.workbench.completed = false;
+
+            resetPhase1();
+            resetSim();
+            resetFlowchart();
+            renderWorkbench();
+
+            document.getElementById('workbench-rationale-box').classList.add('hidden');
+            document.getElementById('exit-solutions-panel').classList.add('hidden');
+            document.getElementById('btn-toggle-answers').classList.add('hidden');
+            document.getElementById('exit-score-text').innerText = '0 / 9 Marks';
+
+            updateGlobalMetrics();
+            switchTab('phase1');
+        }
+
+        // Initialize on DOM load
+        window.addEventListener('DOMContentLoaded', () => {
+            initPhase1();
+            renderWorkbench();
+            drawCanvasFrame(0);
+        });
+    </script>
+</body>
+</html>

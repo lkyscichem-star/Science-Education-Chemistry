@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Giant Covalent Structure of Graphite</title>
+    <!-- Tailwind CSS for UI -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass through to the 3D canvas */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        .pointer-events-auto {
+            pointer-events: auto;
+        }
+        /* Custom scrollbar for the info panel */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4); 
+        }
+        .glass-panel {
+            background: rgba(15, 15, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay -->
+    <div id="ui-layer" class="p-4 md:p-8 flex-row md:flex">
+        
+        <!-- Information Panel -->
+        <div class="pointer-events-auto glass-panel rounded-2xl p-6 md:w-96 max-h-[90vh] overflow-y-auto shadow-2xl flex-shrink-0">
+            <h1 class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-200 to-gray-500 mb-2">Graphite</h1>
+            <p class="text-sm text-blue-400 font-semibold mb-6 tracking-wide uppercase">Giant Covalent Structure</p>
+
+            <div class="space-y-6">
+                <!-- Point 1 -->
+                <div class="bg-white bg-opacity-5 p-4 rounded-xl border border-gray-700 hover:bg-opacity-10 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                        <h3 class="font-semibold text-gray-200">Structure & Bonding</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Carbon atoms are linked by <span class="text-white font-medium">covalent bonds</span>. These particles are arranged in the same plane. Individual layers within the carbon sheet (graphene) are held together by weak <span class="text-orange-300">van der Waals forces</span>.
+                    </p>
+                </div>
+
+                <!-- Point 2 -->
+                <div class="bg-white bg-opacity-5 p-4 rounded-xl border border-gray-700 hover:bg-opacity-10 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
+                        <h3 class="font-semibold text-gray-200">Delocalized Electrons</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Each carbon atom is covalently bonded to 3 carbon atoms in each layer. One unbonded electron in the valence shell is present on each carbon atom. These unbonded electrons become delocalized between the sheet layers of carbon atoms. This allows movement of electrons that runs parallel to the layers.
+                    </p>
+                </div>
+
+                <!-- Point 3 -->
+                <div class="bg-white bg-opacity-5 p-4 rounded-xl border border-gray-700 hover:bg-opacity-10 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-3 h-3 rounded-full bg-orange-400"></div>
+                        <h3 class="font-semibold text-gray-200">Physical Properties</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        The carbon atoms form covalent bonds in each layer of the carbon sheet. Because the van der Waals forces between them are weak, layers of carbon atoms can easily slide over one another. Graphite is <span class="text-white font-medium">soft and slippery</span> because of its unique structure.
+                    </p>
+                </div>
+
+                <!-- Point 4 -->
+                <div class="bg-white bg-opacity-5 p-4 rounded-xl border border-gray-700 hover:bg-opacity-10 transition-colors">
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg>
+                        <h3 class="font-semibold text-gray-200">Conductivity</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Yes. The mobile electron (unbonded) can flow along the layers of hexagonally linked carbon atoms.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Controls Help -->
+            <div class="mt-8 border-t border-gray-700 pt-4 text-xs text-gray-500 flex flex-col gap-1">
+                <p>🖱️ Left Click + Drag to <b>Rotate</b></p>
+                <p>⚙️ Scroll to <b>Zoom</b></p>
+                <p>🖱️ Right Click + Drag to <b>Pan</b></p>
+            </div>
+            
+            <div class="mt-4 flex gap-2">
+                <button id="toggle-rotate" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white text-xs py-2 px-4 rounded-lg transition-colors border border-gray-600">
+                    Pause Rotation
+                </button>
+            </div>
+        </div>
+        
+        <!-- Legend (Bottom Right visually, handled by absolute positioning or flex box) -->
+        <div class="pointer-events-auto absolute bottom-4 right-4 md:bottom-8 md:right-8 glass-panel rounded-xl p-4 flex flex-col gap-3">
+            <div class="text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Legend</div>
+            <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full bg-[#333333] border border-gray-500"></div>
+                <span class="text-sm text-gray-300">Carbon Atom</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-6 h-1 bg-[#888888] rounded"></div>
+                <span class="text-sm text-gray-300">Covalent Bond</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="text-orange-400 text-lg font-bold tracking-[0.2em] leading-none -mt-1">---</div>
+                <span class="text-sm text-gray-300">van der Waals Force</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="w-4 h-4 rounded-full bg-blue-500 blur-[2px]"></div>
+                <span class="text-sm text-gray-300">Mobile Electron</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Three.js Setup
+        let scene, camera, renderer, controls;
+        let autoRotate = true;
+        
+        // Data arrays to hold elements for animation
+        const electrons = [];
+        const electronGroup = new THREE.Group();
+
+        init();
+        animate();
+
+        function init() {
+            // 1. Scene setup
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050505, 0.03);
+
+            // 2. Camera setup
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(12, 8, 15);
+
+            // 3. Renderer setup
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for high DPI
+            container.appendChild(renderer.domElement);
+
+            // 4. Controls setup
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = autoRotate;
+            controls.autoRotateSpeed = 1.0;
+
+            // 5. Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.6);
+            dirLight1.position.set(10, 20, 10);
+            scene.add(dirLight1);
+
+            const dirLight2 = new THREE.DirectionalLight(0x90b0ff, 0.4); // slight blue rim light
+            dirLight2.position.set(-10, -10, -10);
+            scene.add(dirLight2);
+
+            const pointLight = new THREE.PointLight(0xffaa55, 0.5, 50); // warm light center
+            pointLight.position.set(0, 0, 0);
+            scene.add(pointLight);
+
+            // 6. Build the Graphite Structure
+            buildGraphite();
+
+            // Add electron group to scene
+            scene.add(electronGroup);
+
+            // 7. Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            
+            document.getElementById('toggle-rotate').addEventListener('click', function(e) {
+                autoRotate = !autoRotate;
+                controls.autoRotate = autoRotate;
+                this.innerText = autoRotate ? "Pause Rotation" : "Resume Rotation";
+                this.classList.toggle('bg-blue-600', !autoRotate);
+                this.classList.toggle('hover:bg-blue-500', !autoRotate);
+                this.classList.toggle('bg-gray-800', autoRotate);
+                this.classList.toggle('hover:bg-gray-700', autoRotate);
+            });
+            
+            // Stop auto-rotate temporarily if user interacts
+            controls.addEventListener('start', () => { controls.autoRotate = false; });
+            controls.addEventListener('end', () => { controls.autoRotate = autoRotate; });
+        }
+
+        function buildGraphite() {
+            // Materials
+            const atomMaterial = new THREE.MeshStandardMaterial({
+                color: 0x2a2a2a,
+                roughness: 0.6,
+                metalness: 0.4,
+            });
+
+            const bondMaterial = new THREE.MeshStandardMaterial({
+                color: 0x888888,
+                roughness: 0.4,
+                metalness: 0.2,
+            });
+
+            const vdwMaterial = new THREE.LineDashedMaterial({
+                color: 0xffaa55,
+                linewidth: 2,
+                dashSize: 0.2,
+                gapSize: 0.2,
+                transparent: true,
+                opacity: 0.6
+            });
+
+            // Geometries
+            const atomGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+            
+            const layers = [];
+            const layerSpacing = 3.0; // Distance between graphene sheets
+            const bondLength = 1.2;
+            const gridRadius = 4; // How many hexagons wide/deep
+            
+            // Generate layers (AB stacking)
+            for (let l = 0; l < 3; l++) {
+                const yOffset = (l - 1) * layerSpacing;
+                // In graphite (AB stacking), alternating layers are shifted
+                const isLayerB = l % 2 !== 0;
+                
+                const layerAtoms = generateGrapheneLayer(yOffset, bondLength, gridRadius, isLayerB);
+                layers.push(layerAtoms);
+
+                // Add atoms and intra-layer bonds to scene
+                for (let i = 0; i < layerAtoms.length; i++) {
+                    const atom = new THREE.Mesh(atomGeometry, atomMaterial);
+                    atom.position.copy(layerAtoms[i]);
+                    scene.add(atom);
+
+                    // Create covalent bonds (intra-layer)
+                    for (let j = i + 1; j < layerAtoms.length; j++) {
+                        const dist = layerAtoms[i].distanceTo(layerAtoms[j]);
+                        // If distance is close to bond length, draw cylinder
+                        if (dist > 0 && dist < bondLength * 1.1) {
+                            createCylinderBond(layerAtoms[i], layerAtoms[j], 0.08, bondMaterial);
+                        }
+                    }
+                }
+                
+                // Add moving electrons to this layer
+                generateElectronsForLayer(yOffset, gridRadius * bondLength * 1.5);
+            }
+
+            // Create van der Waals forces (inter-layer)
+            // Connect atoms that are perfectly vertically aligned
+            for (let l = 0; l < layers.length - 1; l++) {
+                const layer1 = layers[l];
+                const layer2 = layers[l+1];
+
+                for (let i = 0; i < layer1.length; i++) {
+                    for (let j = 0; j < layer2.length; j++) {
+                        // Check distance in XZ plane
+                        const dx = layer1[i].x - layer2[j].x;
+                        const dz = layer1[i].z - layer2[j].z;
+                        const distXZ = Math.sqrt(dx*dx + dz*dz);
+
+                        if (distXZ < 0.1) { // Vertically aligned
+                            createDashedBond(layer1[i], layer2[j], vdwMaterial);
+                        }
+                    }
+                }
+            }
+        }
+
+        function generateGrapheneLayer(yOffset, d, gridRadius, isLayerB) {
+            const atoms = [];
+            
+            // Standard AB stacking shift: shift by one bond length along x
+            const shiftX = isLayerB ? d : 0;
+
+            for (let i = -gridRadius; i <= gridRadius; i++) {
+                for (let j = -gridRadius; j <= gridRadius; j++) {
+                    // Hexagonal lattice basis
+                    let cx = i * 1.5 * d + shiftX;
+                    let cz = i * d * Math.sqrt(3)/2 + j * d * Math.sqrt(3);
+
+                    // Add a circular boundary condition so it forms a nice disc, not a rugged square
+                    if (cx*cx + cz*cz < (gridRadius * d * 1.4) ** 2) {
+                        atoms.push(new THREE.Vector3(cx, yOffset, cz));
+                        atoms.push(new THREE.Vector3(cx + d, yOffset, cz));
+                    }
+                }
+            }
+            return atoms;
+        }
+
+        function createCylinderBond(posA, posB, radius, material) {
+            const distance = posA.distanceTo(posB);
+            const cylinderGeom = new THREE.CylinderGeometry(radius, radius, distance, 8);
+            const cylinder = new THREE.Mesh(cylinderGeom, material);
+            
+            const midPoint = new THREE.Vector3().addVectors(posA, posB).multiplyScalar(0.5);
+            cylinder.position.copy(midPoint);
+            
+            // Orient cylinder
+            cylinder.quaternion.setFromUnitVectors(
+                new THREE.Vector3(0, 1, 0), 
+                new THREE.Vector3().subVectors(posB, posA).normalize()
+            );
+            
+            scene.add(cylinder);
+        }
+
+        function createDashedBond(posA, posB, material) {
+            const points = [];
+            points.push(posA);
+            points.push(posB);
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const line = new THREE.Line(geometry, material);
+            line.computeLineDistances(); // Crucial for dashed lines to work
+            scene.add(line);
+        }
+
+        function generateElectronsForLayer(yOffset, maxRadius) {
+            const count = 40; // Electrons per layer
+            const electronGeometry = new THREE.SphereGeometry(0.12, 8, 8);
+            const electronMaterial = new THREE.MeshBasicMaterial({
+                color: 0x44aaff,
+                transparent: true,
+                opacity: 0.8,
+            });
+
+            for (let i = 0; i < count; i++) {
+                const mesh = new THREE.Mesh(electronGeometry, electronMaterial);
+                
+                // Random position within the radius
+                const angle = Math.random() * Math.PI * 2;
+                const r = Math.sqrt(Math.random()) * maxRadius;
+                
+                mesh.position.x = r * Math.cos(angle);
+                mesh.position.z = r * Math.sin(angle);
+                // Slight offset from the exact atomic plane to make them visible
+                mesh.position.y = yOffset + (Math.random() > 0.5 ? 0.3 : -0.3);
+
+                // Custom properties for animation
+                mesh.userData = {
+                    speedX: (Math.random() * 0.04 + 0.02) * (Math.random() > 0.5 ? 1 : -1),
+                    speedZ: (Math.random() * 0.04 + 0.02) * (Math.random() > 0.5 ? 1 : -1),
+                    bounds: maxRadius
+                };
+
+                electrons.push(mesh);
+                electronGroup.add(mesh);
+            }
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update Controls
+            controls.update();
+
+            // Animate Electrons (Delocalized electrons flowing parallel to layers)
+            electrons.forEach(electron => {
+                electron.position.x += electron.userData.speedX;
+                electron.position.z += electron.userData.speedZ;
+
+                // Boundary check (loop around)
+                const distSq = electron.position.x ** 2 + electron.position.z ** 2;
+                const boundsSq = electron.userData.bounds ** 2;
+
+                if (distSq > boundsSq) {
+                    // Reset to opposite side to simulate continuous flow
+                    electron.position.x *= -0.95;
+                    electron.position.z *= -0.95;
+                }
+                
+                // Slight pulsing effect for glow
+                const time = Date.now() * 0.005;
+                electron.scale.setScalar(1 + Math.sin(time + electron.position.x) * 0.3);
+            });
+
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>

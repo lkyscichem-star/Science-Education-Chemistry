@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haber Process Interactive Simulator</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --n2-color: #3498db;
+            --h2-color: #e74c3c;
+            --nh3-color: #2ecc71;
+            --danger: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--primary); margin-bottom: 5px; }
+        .equation { font-size: 1.2rem; font-weight: bold; color: #555; background: #e8ecef; display: inline-block; padding: 10px 20px; border-radius: 5px; }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 0; color: var(--primary); }
+        
+        .control-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eef2f5;
+            border-radius: 6px;
+            background: #fafbfc;
+        }
+
+        .control-group h3 { margin-top: 0; font-size: 1.1rem; color: #444; }
+
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;}
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+
+        input[type="range"] { flex: 1; }
+        .value-display { min-width: 50px; text-align: right; font-weight: bold; color: var(--accent); }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-reset:hover {
+            background-color: #34495e;
+        }
+
+        .hint-box {
+            background-color: #e8f4fd;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+
+        .hint-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .hint-box li { margin-bottom: 8px; }
+
+        .species-n2 { color: var(--n2-color); font-weight: bold; }
+        .species-h2 { color: var(--h2-color); font-weight: bold; }
+        .species-nh3 { color: var(--nh3-color); font-weight: bold; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+        }
+
+        .energy-chart-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Haber Process Interactive Simulator</h1>
+        <div class="equation">N₂(g) + 3H₂(g) ⇌ 2NH₃(g) &nbsp;&nbsp; ΔH = -92 kJ mol⁻¹</div>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <h2>Simulation Controls</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-top: -10px;">Adjust sliders to see updates applied instantly at <strong>t = 30s</strong>.</p>
+            
+            <div class="control-group">
+                <h3>Part A: Effect of Concentration (at t=30s)</h3>
+                
+                <label>Add/Remove N₂ Gas</label>
+                <div class="slider-container">
+                    <input type="range" id="param-n2" min="-15" max="30" step="5" value="0">
+                    <span class="value-display" id="val-n2">0 cm³</span>
+                </div>
+
+                <label>Add/Remove H₂ Gas</label>
+                <div class="slider-container">
+                    <input type="range" id="param-h2" min="-30" max="30" step="5" value="0">
+                    <span class="value-display" id="val-h2">0 cm³</span>
+                </div>
+
+                <label>Add NH₃ Gas</label>
+                <div class="slider-container">
+                    <input type="range" id="param-nh3" min="0" max="30" step="5" value="0">
+                    <span class="value-display" id="val-nh3">0 cm³</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Part B: Effect of Pressure / Volume</h3>
+                <label>Pressure Multiplier (Halving Volume doubles Pressure)</label>
+                <div class="slider-container">
+                    <input type="range" id="param-pressure" min="0.5" max="2.0" step="0.25" value="1.0">
+                    <span class="value-display" id="val-pressure">1.0x</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Part C: Effect of Temperature</h3>
+                <label>Temperature Change (ΔT)</label>
+                <div class="slider-container">
+                    <input type="range" id="param-temp" min="-20" max="20" step="5" value="0">
+                    <span class="value-display" id="val-temp">0°C</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Part D: Effect of a Catalyst</h3>
+                <label>Select Catalyst Type</label>
+                <select id="param-catalyst">
+                    <option value="none">No Catalyst</option>
+                    <option value="positive">Positive Catalyst (e.g., Iron)</option>
+                    <option value="negative">Negative Catalyst / Inhibitor</option>
+                </select>
+            </div>
+
+            <button class="btn-reset" id="btn-reset">🔄 Reset Dashboard & Graph</button>
+        </div>
+
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <h2>Dynamic Equilibrium Graph</h2>
+                <div class="chart-container">
+                    <canvas id="equilibriumChart"></canvas>
+                </div>
+            </div>
+
+            <div>
+                <h2>Energy Profile Path</h2>
+                <div class="energy-chart-container">
+                    <canvas id="energyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card full-width">
+            <h2>💡 Graph Observation Guide & Hints</h2>
+            <div class="hint-box">
+                <strong>How to read the Spikes and Slopes at t=30s:</strong>
+                <ul>
+                    <li><span class="species-n2">Blue Line = [N₂] (Initial: 20 cm³)</span>, <span class="species-h2">Red Line = [H₂] (Initial: 60 cm³)</span>, and <span class="species-nh3">Green Line = [NH₃] (Initial: 40 cm³)</span></li>
+                    <li><strong>Concentration Spikes:</strong> If you intentionally add a specific gas, you will see exactly <strong>one sharp vertical spike</strong> at t=30s for that species only. This represents the instant change in concentration.</li>
+                    <li><strong>Pressure Spikes:</strong> If you increase pressure (or halve the volume), you will see <strong>three simultaneous upward spikes</strong> at t=30s because decreasing the volume compresses all gases equally.</li>
+                    <li><strong>Temperature Transitions:</strong> Adjusting the temperature causes <strong>zero vertical spikes</strong>. All three lines transition into smooth, steady curves starting from t=30s.</li>
+                    <li><strong>Catalyst Impact:</strong> Changing the catalyst yields <strong>no changes</strong> on the concentration graph because a catalyst accelerates both forward and backward reactions equally.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Initialization and Variables ---
+        const eqCanvas = document.getElementById('equilibriumChart').getContext('2d');
+        const energyCanvas = document.getElementById('energyChart').getContext('2d');
+
+        // Baselines matching user criteria
+        const baseN2 = 20;
+        const baseH2 = 60;
+        const baseNH3 = 40;
+
+        let eqChart;
+        let enChart;
+
+        // --- Core Math Simulation Logic ---
+        function generateSimulationData() {
+            const labels = [];
+            const dataN2 = [];
+            const dataH2 = [];
+            const dataNH3 = [];
+
+            // Grab element parameter inputs
+            const deltaN2 = parseFloat(document.getElementById('param-n2').value);
+            const deltaH2 = parseFloat(document.getElementById('param-h2').value);
+            const deltaNH3 = parseFloat(document.getElementById('param-nh3').value);
+            const pMult = parseFloat(document.getElementById('param-pressure').value);
+            const deltaT = parseFloat(document.getElementById('param-temp').value);
+
+            // Generate timeline array (0 to 60 seconds)
+            for (let t = 0; t <= 60; t++) {
+                labels.push(t + 's');
+
+                if (t < 30) {
+                    // Stable baseline pre-equilibrium requested: N2=20, H2=60, NH3=40
+                    dataN2.push(baseN2);
+                    dataH2.push(baseH2);
+                    dataNH3.push(baseNH3);
+                } else if (t === 30) {
+                    // The exact moment Le Chatelier stress gets introduced
+                    let instantN2 = baseN2 * pMult + deltaN2;
+                    let instantH2 = baseH2 * pMult + deltaH2;
+                    let instantNH3 = baseNH3 * pMult + deltaNH3;
+                    
+                    dataN2.push(Math.max(0, instantN2));
+                    dataH2.push(Math.max(0, instantH2));
+                    dataNH3.push(Math.max(0, instantNH3));
+                } else {
+                    // Gradual path moving towards new shifted equilibrium position
+                    let instantN2 = baseN2 * pMult + deltaN2;
+                    let instantH2 = baseH2 * pMult + deltaH2;
+                    let instantNH3 = baseNH3 * pMult + deltaNH3;
+
+                    // Compute shifted offsets dynamically 
+                    let shiftConc = (deltaN2 * 0.2) + (deltaH2 * 0.2) - (deltaNH3 * 0.3);
+                    let shiftPres = (pMult - 1.0) * 8; 
+                    let shiftTemp = -deltaT * 0.3; 
+
+                    let netShift = shiftConc + shiftPres + shiftTemp;
+                    
+                    // Progressive logarithmic curve transition towards steady state
+                    let factor = 1 - Math.exp(-(t - 30) / 6); 
+
+                    let currentN2 = instantN2 - (1 * netShift * factor);
+                    let currentH2 = instantH2 - (3 * netShift * factor);
+                    let currentNH3 = instantNH3 + (2 * netShift * factor);
+
+                    dataN2.push(Math.max(0, parseFloat(currentN2.toFixed(1))));
+                    dataH2.push(Math.max(0, parseFloat(currentH2.toFixed(1))));
+                    dataNH3.push(Math.max(0, parseFloat(currentNH3.toFixed(1))));
+                }
+            }
+
+            return { labels, dataN2, dataH2, dataNH3 };
+        }
+
+        // --- Render Concentration Graphs ---
+        function updateEquilibriumChart() {
+            const simData = generateSimulationData();
+
+            if (eqChart) {
+                eqChart.data.labels = simData.labels;
+                eqChart.data.datasets[0].data = simData.dataN2;
+                eqChart.data.datasets[1].data = simData.dataH2;
+                eqChart.data.datasets[2].data = simData.dataNH3;
+                eqChart.update('none'); 
+            } else {
+                eqChart = new Chart(eqCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: simData.labels,
+                        datasets: [
+                            { label: '[N₂]', data: simData.dataN2, borderColor: '#3498db', borderWidth: 3, pointRadius: 0, fill: false, tension: 0 },
+                            { label: '[H₂]', data: simData.dataH2, borderColor: '#e74c3c', borderWidth: 3, pointRadius: 0, fill: false, tension: 0 },
+                            { label: '[NH₃]', data: simData.dataNH3, borderColor: '#2ecc71', borderWidth: 3, pointRadius: 0, fill: false, tension: 0 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { 
+                                ticks: { display: true }
+                            },
+                            y: { 
+                                min: 0, 
+                                max: 200,
+                                ticks: { display: true }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'top' }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Render Catalyst Profile Graphs ---
+        function updateEnergyChart() {
+            const catalystType = document.getElementById('param-catalyst').value;
+            let peakHeight = 120; 
+
+            if (catalystType === 'positive') peakHeight = 85;  
+            if (catalystType === 'negative') peakHeight = 155; 
+
+            const labels = ['Reactants (N₂+3H₂)', 'Transition State', 'Products (2NH₃)'];
+            const dataData = [60, peakHeight, 30]; 
+
+            if (enChart) {
+                enChart.data.datasets[0].data = dataData;
+                enChart.update();
+            } else {
+                enChart = new Chart(energyCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Potential Energy Path',
+                            data: dataData,
+                            borderColor: '#9b59b6',
+                            backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                            fill: true,
+                            tension: 0.4, 
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { display: true, min: 0, max: 180, ticks: { display: true } }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- Sync DOM labels & update display output ---
+        function syncAndRefresh() {
+            document.getElementById('val-n2').innerText = document.getElementById('param-n2').value + ' cm³';
+            document.getElementById('val-h2').innerText = document.getElementById('param-h2').value + ' cm³';
+            document.getElementById('val-nh3').innerText = document.getElementById('param-nh3').value + ' cm³';
+            document.getElementById('val-pressure').innerText = document.getElementById('param-pressure').value + 'x';
+            document.getElementById('val-temp').innerText = (document.getElementById('param-temp').value > 0 ? '+' : '') + document.getElementById('param-temp').value + '°C';
+
+            updateEquilibriumChart();
+            updateEnergyChart();
+        }
+
+        // --- Reset Dashboard Function ---
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            document.getElementById('param-n2').value = 0;
+            document.getElementById('param-h2').value = 0;
+            document.getElementById('param-nh3').value = 0;
+            document.getElementById('param-pressure').value = 1.0;
+            document.getElementById('param-temp').value = 0;
+            document.getElementById('param-catalyst').value = 'none';
+            syncAndRefresh();
+        });
+
+        // --- Event Listeners hook ---
+        const controlIds = ['param-n2', 'param-h2', 'param-nh3', 'param-pressure', 'param-temp', 'param-catalyst'];
+        controlIds.forEach(id => {
+            document.getElementById(id).addEventListener('input', syncAndRefresh);
+            document.getElementById(id).addEventListener('change', syncAndRefresh);
+        });
+
+        // Initial launch run
+        syncAndRefresh();
+    </script>
+</body>
+</html>
