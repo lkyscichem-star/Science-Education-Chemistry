@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbol Match-Up</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and Babel for running the app in the browser -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; }
+        .correct-animation { animation: correct-pulse 0.5s ease; }
+        @keyframes correct-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .incorrect-animation { animation: incorrect-shake 0.5s ease; }
+        @keyframes incorrect-shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .disabled-button {
+            cursor: not-allowed;
+            background-color: #d1d5db; /* gray-400 */
+        }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- NEW ELEMENT LIST ---
+        const ELEMENTS = [
+            { name: 'Bromine', symbol: 'Br' }, { name: 'Chromium', symbol: 'Cr' },
+            { name: 'Cobalt', symbol: 'Co' }, { name: 'Copper', symbol: 'Cu' },
+            { name: 'Gold', symbol: 'Au' }, { name: 'Iodine', symbol: 'I' },
+            { name: 'Iron', symbol: 'Fe' }, { name: 'Lead', symbol: 'Pb' },
+            { name: 'Mercury', symbol: 'Hg' }, { name: 'Manganese', symbol: 'Mn' },
+            { name: 'Nickel', symbol: 'Ni' }, { name: 'Platinum', symbol: 'Pt' },
+            { name: 'Silver', symbol: 'Ag' }, { name: 'Tin', symbol: 'Sn' },
+            { name: 'Titanium', symbol: 'Ti' }, { name: 'Tungsten', symbol: 'W' },
+            { name: 'Zinc', symbol: 'Zn' }
+        ];
+
+        // Helper to shuffle an array
+        const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
+
+        // Helper to get multiple choice options
+        const getMCOptions = (correctAnswer, property) => {
+            const options = new Set([correctAnswer]);
+            while (options.size < 4) {
+                const randomElement = ELEMENTS[Math.floor(Math.random() * ELEMENTS.length)];
+                options.add(randomElement[property]);
+            }
+            return shuffle(Array.from(options));
+        };
+
+        const PhaseIndicator = ({ phase }) => {
+            const phases = [
+                { id: 'study', name: 'Phase 1: Study' },
+                { id: 'practice', name: 'Phase 2: Practice' },
+                { id: 'summary', name: 'Phase 3: Summary' }
+            ];
+            const currentPhaseIndex = phases.findIndex(p => p.id === phase);
+
+            return (
+                <div className="flex justify-center space-x-2 sm:space-x-4 mb-4">
+                    {phases.map((p, index) => (
+                        <div key={p.id} className={`text-center p-2 rounded-lg text-xs sm:text-sm transition-all duration-300 ${index === currentPhaseIndex ? 'bg-blue-500 text-white font-bold' : 'bg-slate-200 text-slate-600'}`}>
+                            {p.name}
+                        </div>
+                    ))}
+                </div>
+            );
+        };
+
+        const StudyMode = ({ onExit }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const element = ELEMENTS[currentIndex];
+
+            return (
+                 <div className="w-full max-w-lg mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-2xl">
+                    <PhaseIndicator phase="study" />
+                    <div className="text-center bg-slate-50 p-8 rounded-xl border border-slate-200">
+                        <div className="text-6xl sm:text-8xl font-bold text-slate-800">{element.symbol}</div>
+                        <div className="text-3xl sm:text-4xl text-slate-700 mt-2">{element.name}</div>
+                    </div>
+                    <div className="flex justify-between mt-6">
+                        <button onClick={() => setCurrentIndex(prev => (prev > 0 ? prev - 1 : ELEMENTS.length - 1))} className="bg-slate-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-600">Previous</button>
+                        <button onClick={onExit} className="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-600">Exit Study</button>
+                        <button onClick={() => setCurrentIndex(prev => (prev < ELEMENTS.length - 1 ? prev + 1 : 0))} className="bg-slate-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-slate-600">Next</button>
+                    </div>
+                </div>
+            )
+        };
+        
+        const PracticeMode = ({ onExit }) => {
+            const [questions, setQuestions] = useState([]);
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [userAnswers, setUserAnswers] = useState({ name: '', symbol: '' });
+            const [isAnswered, setIsAnswered] = useState(false);
+            const [feedback, setFeedback] = useState(null);
+            const [isCorrect, setIsCorrect] = useState(false);
+            const [score, setScore] = useState(0);
+            const [sessionMistakes, setSessionMistakes] = useState(new Set());
+            const [isFinished, setIsFinished] = useState(false);
+
+            useEffect(() => {
+                const practiceElements = shuffle(ELEMENTS).slice(0, 10);
+                setQuestions(practiceElements.map(el => {
+                    const promptType = ['name', 'symbol'][Math.floor(Math.random() * 2)];
+                    const questionTypes = { name: 'mc', symbol: 'input' };
+                     if (promptType === 'name') {
+                        questionTypes.symbol = 'mc';
+                        questionTypes.name = 'input';
+                    }
+                    return { element: el, promptType, questionTypes };
+                }));
+            }, []);
+
+            const handleInputChange = (property, value) => {
+                setUserAnswers(prev => ({ ...prev, [property]: value }));
+            };
+
+            const checkAnswer = () => {
+                const { element, promptType } = questions[currentQuestionIndex];
+                const localFeedback = {};
+                let allCorrect = true;
+
+                const keysToCheck = Object.keys(userAnswers).filter(key => key !== promptType);
+
+                keysToCheck.forEach(key => {
+                    const userAnswer = String(userAnswers[key] || '').toLowerCase().trim();
+                    const correctAnswer = String(element[key]).toLowerCase().trim();
+                    if (userAnswer === correctAnswer) {
+                        localFeedback[key] = 'correct';
+                    } else {
+                        localFeedback[key] = 'incorrect';
+                        allCorrect = false;
+                    }
+                });
+
+                setFeedback(localFeedback);
+                setIsAnswered(true);
+                setIsCorrect(allCorrect);
+
+                if (allCorrect) {
+                    setScore(prev => prev + 1);
+                } else {
+                    setSessionMistakes(prev => new Set(prev).add(element.name));
+                }
+            };
+            
+            const nextQuestion = () => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    setCurrentQuestionIndex(prev => prev + 1);
+                } else {
+                    setIsFinished(true);
+                }
+                
+                setIsAnswered(false);
+                setFeedback(null);
+                setUserAnswers({ name: '', symbol: '' });
+            };
+
+            if (isFinished) {
+                return (
+                    <div className="w-full max-w-lg mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-2xl">
+                        <PhaseIndicator phase="summary" />
+                        <div className="text-center p-8">
+                            <h1 className="text-3xl font-bold text-slate-800 mb-2">Practice Complete!</h1>
+                            <p className="text-slate-600 mb-4 text-2xl">Your Final Score: <span className="font-bold text-blue-600">{score}/10</span></p>
+                            {sessionMistakes.size > 0 && (
+                                <div className="mt-4 text-left">
+                                    <h3 className="font-bold text-slate-700 text-lg mb-2">Elements to review:</h3>
+                                    <div className="space-y-2 text-left bg-slate-100 p-3 rounded-lg">
+                                        {Array.from(sessionMistakes).map(name => {
+                                            const element = ELEMENTS.find(el => el.name === name);
+                                            if (!element) return null;
+                                            return (
+                                                <div key={element.name} className="flex justify-between items-center p-2 bg-white rounded shadow-sm">
+                                                    <span className="font-bold text-slate-700">{element.name}</span>
+                                                    <span className="text-slate-500 font-mono text-lg">{element.symbol}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                            <button onClick={onExit} className="mt-6 bg-blue-500 text-white font-bold py-3 px-8 rounded-lg text-xl hover:bg-blue-600">Back to Start</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (questions.length === 0) return <div>Loading...</div>;
+
+            const { element, promptType, questionTypes } = questions[currentQuestionIndex];
+
+            const QuestionField = ({ type, label }) => {
+                if (promptType === type) {
+                    return (
+                        <div>
+                            <label className="block text-slate-600 font-medium mb-1">{label}</label>
+                            <div className="w-full bg-white border-2 border-slate-300 rounded-lg p-3 text-lg font-bold text-slate-800">{element[type]}</div>
+                        </div>
+                    );
+                }
+
+                const isMC = questionTypes[type] === 'mc';
+                const options = isMC ? getMCOptions(element[type], type) : [];
+                const isFieldCorrect = isAnswered && feedback && feedback[type] === 'correct';
+                const isFieldIncorrect = isAnswered && feedback && feedback[type] === 'incorrect';
+
+                return (
+                    <div>
+                        <label className="block text-slate-600 font-medium mb-1">{label}</label>
+                        {isMC ? (
+                           <div className="grid grid-cols-2 gap-2">
+                               {options.map(opt => (
+                                   <button key={opt}
+                                       onClick={() => !isAnswered && handleInputChange(type, opt)}
+                                       className={`p-3 rounded-lg text-center font-semibold border-2 ${userAnswers[type] === opt ? 'bg-blue-500 text-white border-blue-500' : 'bg-slate-50 border-slate-300'} ${isAnswered ? 'opacity-50' : 'hover:bg-blue-100'}`}
+                                   >
+                                       {opt}
+                                   </button>
+                               ))}
+                           </div>
+                        ) : (
+                             <input
+                                type="text"
+                                value={userAnswers[type]}
+                                onChange={(e) => !isAnswered && handleInputChange(type, e.target.value)}
+                                className={`w-full border-2 rounded-lg p-3 text-lg ${isAnswered ? 'bg-slate-200' : 'bg-white'} ${isFieldCorrect ? 'border-green-500' : ''} ${isFieldIncorrect ? 'border-red-500' : ''}`}
+                                placeholder={`Enter ${label}...`}
+                                disabled={isAnswered}
+                            />
+                        )}
+                        {isFieldIncorrect && <div className="text-red-600 font-semibold mt-1">Correct: {element[type]}</div>}
+                    </div>
+                );
+            };
+            
+            const answersGiven = Object.keys(userAnswers).filter(k => k !== promptType).every(k => (userAnswers[k] || '').toString().trim() !== '');
+
+            return (
+                <div className="w-full max-w-lg mx-auto p-4 sm:p-6 bg-white rounded-2xl shadow-2xl">
+                    <PhaseIndicator phase="practice" />
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="font-bold text-xl text-slate-700">Score: {score}</div>
+                        <div className="font-bold text-xl text-slate-500">{currentQuestionIndex + 1} / {questions.length}</div>
+                    </div>
+
+                    <div className={`space-y-4 p-6 rounded-xl bg-slate-50 border border-slate-200 ${isAnswered && (isCorrect ? 'correct-animation' : 'incorrect-animation')}`}>
+                        <QuestionField type="name" label="Element Name" />
+                        <QuestionField type="symbol" label="Symbol" />
+                    </div>
+                    
+                    {isAnswered && (
+                        <div className="text-center my-4 h-10 flex items-center justify-center">
+                            {isCorrect ? (
+                                <h2 className="text-green-600 font-bold text-4xl animate-pulse">YES! ✅</h2>
+                            ) : (
+                                <h2 className="text-red-600 font-bold text-4xl">NO ❌</h2>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="mt-2">
+                        {isAnswered ? (
+                            <button onClick={nextQuestion} className="w-full bg-blue-500 text-white font-bold py-4 rounded-lg text-xl hover:bg-blue-600">Next</button>
+                        ) : (
+                            <button onClick={checkAnswer} className={`w-full bg-green-500 text-white font-bold py-4 rounded-lg text-xl transition-colors ${!answersGiven ? 'opacity-50 disabled-button' : 'hover:bg-green-600'}`}
+                             disabled={!answersGiven}>Submit</button>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+        
+        const App = () => {
+            const [mode, setMode] = useState('start'); // 'start', 'study', 'practice'
+
+            if (mode === 'study') {
+                return <StudyMode onExit={() => setMode('start')} />;
+            }
+            
+            if (mode === 'practice') {
+                return <PracticeMode onExit={() => setMode('start')} />;
+            }
+
+            return (
+                <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md mx-auto">
+                    <h1 className="text-4xl font-bold text-slate-800 mb-2">Symbol Match-Up</h1>
+                    <p className="text-slate-600 mb-8">Practice common metal and non-metal symbols.</p>
+                    <div className="space-y-4">
+                        <button onClick={() => setMode('study')} className="w-full bg-blue-500 text-white font-bold py-4 px-8 rounded-lg text-xl hover:bg-blue-600 transition-colors">
+                           Phase 1: Study Mode
+                        </button>
+                        <button onClick={() => setMode('practice')} className="w-full bg-green-500 text-white font-bold py-4 px-8 rounded-lg text-xl hover:bg-green-600 transition-colors">
+                           Phase 2: Practice Mode
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
