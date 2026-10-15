@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKDSE Chemistry: Ionic Formulas & Naming Practice</title>
+    <style>
+        :root {
+            --primary: #2b5876;
+            --primary-dark: #1e3c72;
+            --secondary: #00b4db;
+            --accent: #4e4376;
+            --correct: #2e7d32;
+            --correct-bg: #e8f5e9;
+            --incorrect: #c62828;
+            --incorrect-bg: #ffebee;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px 10px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .badge-dse {
+            background-color: #ff9800;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .select-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        select, button {
+            padding: 10px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        select {
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .question-box {
+            text-align: center;
+            padding: 20px 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .question-type {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .question-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 500px;
+            margin: 0 auto 20px auto;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--secondary);
+        }
+
+        /* Helper Keypad for Subscripts */
+        .keypad {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+            background: #eef2f5;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .keypad-btn {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .keypad-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .feedback-box {
+            display: none;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        .feedback-box.correct {
+            display: block;
+            background-color: var(--correct-bg);
+            color: var(--correct);
+            border: 1px solid var(--correct);
+        }
+
+        .feedback-box.incorrect {
+            display: block;
+            background-color: var(--incorrect-bg);
+            color: var(--incorrect);
+            border: 1px solid var(--incorrect);
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #444;
+            background: white;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 3px solid #ccc;
+        }
+
+        .color-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 6px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Modal Reference Table */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            font-weight: bold;
+            color: #777;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .section-title {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .stat-value {
+                font-size: 1.2rem;
+            }
+            .question-text {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>HKDSE Chemistry Interactive Trainer</h1>
+        <p>Topic II: Microscopic World I — <span class="badge-dse">Ionic Formulas & Naming</span></p>
+    </header>
+
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="stat-score">0 / 0</div>
+            <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="stat-accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="stat-streak">🔥 0</div>
+            <div class="stat-label">Streak</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="controls">
+            <div class="select-group">
+                <label for="mode-select"><b>Mode:</b></label>
+                <select id="mode-select" onchange="resetAndNewQuestion()">
+                    <option value="mixed">Mixed (Name ↔ Formula)</option>
+                    <option value="nameToFormula">Name → Formula</option>
+                    <option value="formulaToName">Formula → Name</option>
+                </select>
+            </div>
+            
+            <div class="select-group">
+                <label for="filter-select"><b>Scope:</b></label>
+                <select id="filter-select" onchange="resetAndNewQuestion()">
+                    <option value="all">All Compounds & Acids</option>
+                    <option value="colored">Colored Ions Only (DSE Focus)</option>
+                    <option value="acids">Common Acids Only</option>
+                </select>
+            </div>
+
+            <div>
+                <button class="btn btn-secondary" onclick="openModal()">📖 Reference Table</button>
+            </div>
+        </div>
+
+        <div class="question-box">
+            <div class="question-type" id="question-type">Question Loading...</div>
+            <div class="question-text" id="question-prompt">---</div>
+        </div>
+
+        <div class="input-group">
+            <div class="input-row">
+                <input type="text" id="user-input" placeholder="Type your answer here..." autocomplete="off" onkeydown="if(event.key==='Enter') checkAnswer()">
+                <button class="btn" onclick="checkAnswer()" id="submit-btn">Submit</button>
+            </div>
+
+            <!-- Quick Subscript Toolbar -->
+            <div class="keypad" id="subscript-keypad">
+                <span style="font-size: 0.8rem; width: 100%; text-align: center; color: #666; margin-bottom: 2px;">Subscript Insert Helper:</span>
+                <button class="keypad-btn" onclick="insertSubscript('₂')">₂</button>
+                <button class="keypad-btn" onclick="insertSubscript('₃')">₃</button>
+                <button class="keypad-btn" onclick="insertSubscript('₄')">₄</button>
+                <button class="keypad-btn" onclick="insertSubscript('₅')">₅</button>
+                <button class="keypad-btn" onclick="insertSubscript('₆')">₆</button>
+                <button class="keypad-btn" onclick="insertSubscript('₇')">₇</button>
+                <button class="keypad-btn" onclick="insertSubscript('(')">(</button>
+                <button class="keypad-btn" onclick="insertSubscript(')')">)</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 10px;">
+            <button class="btn btn-secondary" style="font-size: 0.85rem;" onclick="nextQuestion()">Skip / Next Question ➔</button>
+        </div>
+
+        <div id="feedback" class="feedback-box"></div>
+    </div>
+</div>
+
+<!-- Reference Modal -->
+<div id="ref-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2>HKDSE Chemistry Ionic Table Reference</h2>
+        
+        <h3 class="section-title">Common Cations (Positive Ions)</h3>
+        <table>
+            <thead>
+                <tr><th>Name</th><th>Formula</th><th>Color in Solution / Salt</th></tr>
+            </thead>
+            <tbody id="cation-table-body"></tbody>
+        </table>
+
+        <h3 class="section-title">Common Anions (Negative Ions)</h3>
+        <table>
+            <thead>
+                <tr><th>Name</th><th>Formula</th><th>Color in Solution / Salt</th></tr>
+            </thead>
+            <tbody id="anion-table-body"></tbody>
+        </table>
+
+        <h3 class="section-title">Special Common Acids (Trivial Names)</h3>
+        <table>
+            <thead>
+                <tr><th>Common Name</th><th>Formula</th><th>Constituent Ions</th></tr>
+            </thead>
+            <tbody id="acid-table-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+// --- DATA DEFINITIONS (Based strictly on user input) ---
+
+const cations = [
+    { name: "sodium", symbol: "Na", charge: 1, poly: false },
+    { name: "potassium", symbol: "K", charge: 1, poly: false },
+    { name: "calcium", symbol: "Ca", charge: 2, poly: false },
+    { name: "aluminium", symbol: "Al", charge: 3, poly: false },
+    { name: "magnesium", symbol: "Mg", charge: 2, poly: false },
+    { name: "zinc", symbol: "Zn", charge: 2, poly: false },
+    { name: "ammonium", symbol: "NH4", charge: 1, poly: true },
+    { name: "nickel(II)", symbol: "Ni", charge: 2, poly: false, color: "green", hex: "#2e7d32" },
+    { name: "silver", symbol: "Ag", charge: 1, poly: false, altNames: ["silver(I)", "silver(i)"] },
+    { name: "lead(II)", symbol: "Pb", charge: 2, poly: false },
+    { name: "cobalt(II)", symbol: "Co", charge: 2, poly: false, color: "pink", hex: "#e91e63" },
+    { name: "chromium(III)", symbol: "Cr", charge: 3, poly: false, color: "green", hex: "#388e3c" },
+    { name: "mercury(II)", symbol: "Hg", charge: 2, poly: false },
+    { name: "copper(II)", symbol: "Cu", charge: 2, poly: false, color: "blue", hex: "#1976d2" },
+    { name: "iron(II)", symbol: "Fe", charge: 2, poly: false, color: "green", hex: "#43a047" },
+    { name: "iron(III)", symbol: "Fe", charge: 3, poly: false, color: "brown", hex: "#8d6e63" },
+    { name: "manganese(II)", symbol: "Mn", charge: 2, poly: false, color: "pink", hex: "#f48fb1" }
+];
+
+const anions = [
+    { name: "chloride", symbol: "Cl", charge: 1, poly: false },
+    { name: "iodide", symbol: "I", charge: 1, poly: false },
+    { name: "fluoride", symbol: "F", charge: 1, poly: false },
+    { name: "bromide", symbol: "Br", charge: 1, poly: false },
+    { name: "nitrite", symbol: "NO2", charge: 1, poly: true },
+    { name: "sulphite", symbol: "SO3", charge: 2, poly: true, altNames: ["sulfite"] },
+    { name: "nitrate", symbol: "NO3", charge: 1, poly: true },
+    { name: "sulphate", symbol: "SO4", charge: 2, poly: true, altNames: ["sulfate"] },
+    { name: "oxide", symbol: "O", charge: 2, poly: false },
+    { name: "hydroxide", symbol: "OH", charge: 1, poly: true },
+    { name: "hydrogencarbonate", symbol: "HCO3", charge: 1, poly: true },
+    { name: "carbonate", symbol: "CO3", charge: 2, poly: true },
+    { name: "permanganate", symbol: "MnO4", charge: 1, poly: true, color: "purple", hex: "#7b1fa2" },
+    { name: "phosphate", symbol: "PO4", charge: 3, poly: true },
+    { name: "dichromate", symbol: "Cr2O7", charge: 2, poly: true, color: "orange", hex: "#ef6c00" },
+    { name: "phosphide", symbol: "P", charge: 3, poly: false },
+    { name: "nitride", symbol: "N", charge: 3, poly: false }
+];
+
+// Special Common Acids Exception List
+const specialAcids = [
+    { name: "hydrochloric acid", formula: "HCl", cation: "H⁺", anion: "Cl⁻", altNames: ["hydrochloric acid"] },
+    { name: "sulphuric acid", formula: "H2SO4", cation: "H⁺", anion: "SO₄²⁻", altNames: ["sulfuric acid"] },
+    { name: "nitric acid", formula: "HNO3", cation: "H⁺", anion: "NO₃⁻", altNames: ["nitric acid"] },
+    { name: "phosphoric acid", formula: "H3PO4", cation: "H⁺", anion: "PO₄³⁻", altNames: ["phosphoric acid"] },
+    { name: "ethanoic acid", formula: "CH3COOH", cation: "H⁺", anion: "CH₃COO⁻", altNames: ["acetic acid"] }
+];
+
+// --- HELPER FUNCTIONS ---
+
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// Generates chemical formula given cation and anion objects
+function constructFormula(c, a) {
+    let g = gcd(c.charge, a.charge);
+    let cCount = a.charge / g;
+    let aCount = c.charge / g;
+
+    let cStr = c.symbol;
+    if (cCount > 1) {
+        cStr = c.poly ? `(${c.symbol})${cCount}` : `${c.symbol}${cCount}`;
+    }
+
+    let aStr = a.symbol;
+    if (aCount > 1) {
+        aStr = a.poly ? `(${a.symbol})${aCount}` : `${a.symbol}${aCount}`;
+    }
+
+    return cStr + aStr;
+}
+
+// Converts plain formula like Fe2(SO4)3 to formatted HTML with <sub>
+function formatHTMLFormula(formulaStr) {
+    return formulaStr.replace(/([A-Za-z\)])(\d+)/g, '$1<sub>$2</sub>');
+}
+
+// Normalizes user input for smart chemical formula checking
+function normalizeFormula(str) {
+    const map = { '₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9' };
+    let norm = str.replace(/[₀₁₂₃₄₅₆₇₈₉]/g, m => map[m]);
+    return norm.replace(/\s+/g, '').toLowerCase();
+}
+
+// Normalizes user input for compound naming checking
+function normalizeName(str) {
+    let s = str.toLowerCase().trim();
+    s = s.replace(/\s*\(\s*([ivx]+)\s*\)\s*/g, '($1)');
+    s = s.replace(/sulfate/g, 'sulphate').replace(/sulfite/g, 'sulphite');
+    s = s.replace(/\s+/g, ' ');
+    return s;
+}
+
+// --- STATE MANAGEMENT ---
+
+let currentQuestion = null;
+let totalAsked = 0;
+let correctCount = 0;
+let currentStreak = 0;
+
+// --- QUESTION GENERATOR ---
+
+function generateQuestion() {
+    const filter = document.getElementById('filter-select').value;
+    const mode = document.getElementById('mode-select').value;
+
+    let qType = mode;
+    if (mode === 'mixed') {
+        qType = Math.random() < 0.5 ? 'nameToFormula' : 'formulaToName';
+    }
+
+    let item = {};
+
+    if (filter === 'acids') {
+        let acid = specialAcids[Math.floor(Math.random() * specialAcids.length)];
+        item = {
+            name: acid.name,
+            formula: acid.formula,
+            explanation: `Common acid trivial name. Contains ${acid.cation} and ${acid.anion}.`,
+            altNames: acid.altNames || []
+        };
+    } else {
+        // Decide whether to include acid if filter is 'all'
+        let includeAcid = (filter === 'all') && (Math.random() < 0.15);
+
+        if (includeAcid) {
+            let acid = specialAcids[Math.floor(Math.random() * specialAcids.length)];
+            item = {
+                name: acid.name,
+                formula: acid.formula,
+                explanation: `Common acid trivial name. Contains ${acid.cation} and ${acid.anion}.`,
+                altNames: acid.altNames || []
+            };
+        } else {
+            // Standard Ionic Compound
+            let validCations = cations;
+            let validAnions = anions;
+
+            if (filter === 'colored') {
+                validCations = cations.filter(c => c.color);
+                validAnions = anions.filter(a => a.color || true); // keep combinations rich
+            }
+
+            let c = validCations[Math.floor(Math.random() * validCations.length)];
+            let a = validAnions[Math.floor(Math.random() * validAnions.length)];
+
+            // If filter was colored, ensure at least one ion is colored
+            if (filter === 'colored' && !c.color && !a.color) {
+                let coloredAnions = anions.filter(an => an.color);
+                a = coloredAnions[Math.floor(Math.random() * coloredAnions.length)];
+            }
+
+            let formula = constructFormula(c, a);
+            let name = `${c.name} ${a.name}`;
+
+            let g = gcd(c.charge, a.charge);
+            let cRatio = a.charge / g;
+            let aRatio = c.charge / g;
+
+            let colorNotes = [];
+            if (c.color) colorNotes.push(`<span class="color-badge" style="background-color:${c.hex}">${c.name} (${c.color})</span>`);
+            if (a.color) colorNotes.push(`<span class="color-badge" style="background-color:${a.hex}">${a.name} (${a.color})</span>`);
+
+            let exp = `Consists of <b>${c.name} ion</b> (${c.symbol}<sup>${c.charge===1?'+':c.charge+'+'}</sup>) and <b>${a.name} ion</b> (${a.symbol}<sup>${a.charge===1?'-':a.charge+'-'}</sup>).<br>` +
+                      `Charge balance ratio: ${cRatio} : ${aRatio}.` +
+                      (colorNotes.length > 0 ? `<br>HKDSE Color Note: ${colorNotes.join(' ')}` : '');
+
+            let altNames = [];
+            if (c.altNames) {
+                c.altNames.forEach(ac => altNames.push(`${ac} ${a.name}`));
+            }
+            if (a.altNames) {
+                a.altNames.forEach(aa => altNames.push(`${c.name} ${aa}`));
+            }
+
+            item = { name, formula, explanation: exp, altNames };
+        }
+    }
+
+    currentQuestion = {
+        type: qType,
+        item: item
+    };
+
+    renderQuestion();
+}
+
+function renderQuestion() {
+    const qTypeEl = document.getElementById('question-type');
+    const promptEl = document.getElementById('question-prompt');
+    const inputEl = document.getElementById('user-input');
+    const keypadEl = document.getElementById('subscript-keypad');
+    const feedbackEl = document.getElementById('feedback');
+
+    feedbackEl.style.display = 'none';
+    inputEl.value = '';
+    inputEl.focus();
+
+    if (currentQuestion.type === 'nameToFormula') {
+        qTypeEl.textContent = "Write the Chemical Formula for:";
+        promptEl.textContent = currentQuestion.item.name;
+        keypadEl.style.display = 'flex';
+        inputEl.placeholder = "e.g. Fe2(SO4)3 or Fe₂";
+    } else {
+        qTypeEl.textContent = "Write the Systematic / Common Name for:";
+        promptEl.innerHTML = formatHTMLFormula(currentQuestion.item.formula);
+        keypadEl.style.display = 'none';
+        inputEl.placeholder = "e.g. iron(III) sulphate";
+    }
+}
+
+// --- ANSWER VALIDATION ---
+
+function checkAnswer() {
+    if (!currentQuestion) return;
+
+    const userInput = document.getElementById('user-input').value;
+    const feedbackEl = document.getElementById('feedback');
+
+    if (!userInput.trim()) return;
+
+    let isCorrect = false;
+    let expectedText = "";
+
+    if (currentQuestion.type === 'nameToFormula') {
+        let normUser = normalizeFormula(userInput);
+        let normCorrect = normalizeFormula(currentQuestion.item.formula);
+        isCorrect = (normUser === normCorrect);
+        expectedText = formatHTMLFormula(currentQuestion.item.formula);
+    } else {
+        let normUser = normalizeName(userInput);
+        let normCorrect = normalizeName(currentQuestion.item.name);
+        
+        isCorrect = (normUser === normCorrect);
+        
+        if (!isCorrect && currentQuestion.item.altNames) {
+            isCorrect = currentQuestion.item.altNames.some(alt => normalizeName(alt) === normUser);
+        }
+        expectedText = currentQuestion.item.name;
+    }
+
+    totalAsked++;
+    if (isCorrect) {
+        correctCount++;
+        currentStreak++;
+        feedbackEl.className = 'feedback-box correct';
+        feedbackEl.innerHTML = `<b>Correct! 🎉</b><br>${currentQuestion.item.explanation}`;
+    } else {
+        currentStreak = 0;
+        feedbackEl.className = 'feedback-box incorrect';
+        feedbackEl.innerHTML = `<b>Incorrect.</b><br>Correct Answer: <b>${expectedText}</b><br><div class="explanation">${currentQuestion.item.explanation}</div>`;
+    }
+
+    updateStats();
+}
+
+function updateStats() {
+    document.getElementById('stat-score').textContent = `${correctCount} / ${totalAsked}`;
+    let acc = totalAsked === 0 ? 0 : Math.round((correctCount / totalAsked) * 100);
+    document.getElementById('stat-accuracy').textContent = `${acc}%`;
+    document.getElementById('stat-streak').textContent = `🔥 ${currentStreak}`;
+}
+
+function nextQuestion() {
+    generateQuestion();
+}
+
+function resetAndNewQuestion() {
+    generateQuestion();
+}
+
+function insertSubscript(char) {
+    const input = document.getElementById('user-input');
+    input.value += char;
+    input.focus();
+}
+
+// --- MODAL & REFERENCE TABLE RENDER ---
+
+function openModal() {
+    document.getElementById('ref-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('ref-modal').style.display = 'none';
+}
+
+function populateReferenceTables() {
+    const cationBody = document.getElementById('cation-table-body');
+    const anionBody = document.getElementById('anion-table-body');
+    const acidBody = document.getElementById('acid-table-body');
+
+    cationBody.innerHTML = cations.map(c => {
+        let form = c.symbol + (c.charge === 1 ? '⁺' : `<sup>${c.charge}+</sup>`);
+        let col = c.color ? `<span class="color-badge" style="background-color:${c.hex}">${c.color}</span>` : 'Colorless';
+        return `<tr><td>${c.name} ion</td><td>${form}</td><td>${col}</td></tr>`;
+    }).join('');
+
+    anionBody.innerHTML = anions.map(a => {
+        let form = formatHTMLFormula(a.symbol) + (a.charge === 1 ? '⁻' : `<sup>${a.charge}-</sup>`);
+        let col = a.color ? `<span class="color-badge" style="background-color:${a.hex}">${a.color}</span>` : 'Colorless';
+        return `<tr><td>${a.name} ion</td><td>${form}</td><td>${col}</td></tr>`;
+    }).join('');
+
+    acidBody.innerHTML = specialAcids.map(ac => {
+        return `<tr><td><b>${ac.name}</b></td><td>${formatHTMLFormula(ac.formula)}</td><td>${ac.cation}, ${ac.anion}</td></tr>`;
+    }).join('');
+}
+
+// Close modal when clicking outside box
+window.onclick = function(event) {
+    const modal = document.getElementById('ref-modal');
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Initial Setup
+populateReferenceTables();
+generateQuestion();
+</script>
+
+</body>
+</html>
