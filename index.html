@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Interactive 3D science education visualizations and virtual lab modules for chemistry concepts by Mr Leung Ka Yin">
+<meta name="keywords" content="chemistry, education, 3D visualization, graphite, covalent bonding, ice structure, chemical equilibrium, organic qualitative analysis, structure deduction, element explorer, formula writer, element pitfalls">
+<title>Science Education - Chemistry Visualizations</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; min-height: 100vh; }
+.glass-effect { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.1); }
+.gem-card { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(148, 163, 184, 0.2); border-top: 3px solid; transition: all 0.3s ease; padding: 1.5rem; border-radius: 12px; display: flex; flex-direction: column; height: 100%; position: relative; }
+.gem-card:hover { transform: translateY(-4px); border-color: rgba(148, 163, 184, 0.4); background: rgba(30, 41, 59, 0.8); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+.gem-card h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: #f1f5f9; }
+.gem-card p { font-size: 0.95rem; color: #cbd5e1; margin-bottom: 1rem; flex-grow: 1; line-height: 1.6; }
+.gem-link { color: #60a5fa; text-decoration: none; font-weight: 500; display: inline-block; transition: color 0.3s ease; margin-bottom: 1rem; }
+.gem-link:hover { color: #93c5fd; text-decoration: underline; }
+.tag-container { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+.tag { display: inline-block; background: rgba(96, 165, 250, 0.2); color: #60a5fa; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.tag-f3 { display: inline-block; background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.tag-f4 { display: inline-block; background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.tag-new { display: inline-block; background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; animation: pulse-glow 2s infinite; }
+@keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.6); } }
+header { background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid rgba(226, 232, 240, 0.1); padding: 2rem 0; text-align: center; }
+h1 { font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #a78bfa); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+.subtitle { color: #94a3b8; font-size: 1.1rem; }
+main { max-width: 1200px; margin: 3rem auto; padding: 0 1rem; }
+.section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 2rem; color: #f1f5f9; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 4rem; }
+footer { text-align: center; padding: 2rem; border-top: 1px solid rgba(226, 232, 240, 0.1); color: #64748b; font-size: 0.9rem; margin-top: 4rem; }
+footer a { color: #60a5fa; text-decoration: none; transition: color 0.3s ease; }
+footer a:hover { color: #93c5fd; }
+@media (max-width: 768px) { h1 { font-size: 1.75rem; } .section-title { font-size: 1.35rem; } .cards-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+</style>
+</head>
+<body>
+<header>
+<div class="max-w-6xl mx-auto px-4">
+<h1>Science Education in Chemistry</h1>
+<p class="subtitle">Consolidation of Abstract Concepts through Interactive Process</p>
+</div>
+</header>
+<main>
+<section>
+<h2 class="section-title">Featured Structures & Concepts</h2>
+<div class="cards-grid">
+<!-- Existing Card 1 -->
+<div class="gem-card" style="border-top-color: #f7df1e;">
+<h3>Graphite - 3D Structure</h3>
+<p>Explore the layered structure of graphite with interactive 3D visualization. Learn about covalent bonds, delocalized electrons, and the physical properties that make graphite soft and conductive.</p>
+<a href="./Graphite.html" class="gem-link">Launch Graphite →</a>
+<div class="tag-container">
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Existing Card 2 -->
+<div class="gem-card" style="border-top-color: #38bdf8;">
+<h3>Ice Lattice Structure</h3>
+<p>Examine the hexagonal crystalline framework of ice in 3D. Visualize how hydrogen bonds create an open structure, explaining why water expands when it freezes.</p>
+<a href="./Ice_structure.html" class="gem-link">Launch Ice Structure →</a>
+<div class="tag-container">
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Form 3 IS-Chemistry Module 1 -->
+<div class="gem-card" style="border-top-color: #06b6d4;">
+<h3>1st 20 Elements Explorer</h3>
+<p>Master elements 1 to 20 with dedicated Study and Practice modes. Focus on atomic numbers, elemental symbols, Latin root symbols (Na, K), and tricky spellings.</p>
+<a href="./1st 20 Elements Explorer with Study Mode & Quiz.html" class="gem-link">Launch 1st 20 Elements →</a>
+<div class="tag-container">
+<span class="tag-f3">FOR FORM 3 IS-CHEMISTRY</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Form 3 IS-Chemistry Module 2 -->
+<div class="gem-card" style="border-top-color: #0284c7;">
+<h3>Other 18 Common Elements Symbol Match-Up</h3>
+<p>Practice common metal and non-metal symbols beyond the first 20 elements (e.g., Cu, Fe, Ag, Au, Pb). Reinforce symbol-to-name recognition with flashcard study and interactive quizzes.</p>
+<a href="./Other 18 Common Elements Symbol Match-up.html" class="gem-link">Launch Symbol Match-Up →</a>
+<div class="tag-container">
+<span class="tag-f3">FOR FORM 3 IS-CHEMISTRY</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Form 3 IS-Chemistry Module 3 (New Added) -->
+<div class="gem-card" style="border-top-color: #0ea5e9;">
+<h3>Element Pitfalls & Mastery</h3>
+<p>Target common student misconceptions, confusing symbol pairs, and tricky spelling mistakes across fundamental elements with focused quizzes and interactive flashcards.</p>
+<a href="./Element Pitfalls & Mastery.html" class="gem-link">Launch Element Pitfalls →</a>
+<div class="tag-container">
+<span class="tag-f3">FOR FORM 3 IS-CHEMISTRY</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Form 4 Chem Elective Module 1 -->
+<div class="gem-card" style="border-top-color: #10b981;">
+<h3>Formula Writer Challenge</h3>
+<p>Practice writing chemical formulas for common monoatomic/polyatomic ions and molecular compounds using interactive superscript and subscript formatting helpers.</p>
+<a href="./Formula Writer Challenge.html" class="gem-link">Launch Formula Writer →</a>
+<div class="tag-container">
+<span class="tag-f4">FOR FORM 4 CHEM ELECTIVE</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Form 4 Chem Elective Module 2 -->
+<div class="gem-card" style="border-top-color: #059669;">
+<h3>Naming Compounds & Formula Writing</h3>
+<p>Interactive practice covering ionic compounds, mineral acids, and chemical systematic naming. Includes cations, anions, and full formula breakdown exercises.</p>
+<a href="./Name of cpds n writing formulae.html" class="gem-link">Launch Compound Naming →</a>
+<div class="tag-container">
+<span class="tag-f4">FOR FORM 4 CHEM ELECTIVE</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Existing Card 3 -->
+<div class="gem-card" style="border-top-color: #a855f7;">
+<h3>Equilibrium & Le Chatelier</h3>
+<p>Investigate how dynamic equilibrium shifts. Interact with a simulated system to observe the direct effects of 4 key factors: temperature, pressure, volume, and concentration.</p>
+<a href="./Chemical_Eqm.html" class="gem-link">Launch Equilibrium Module →</a>
+<div class="tag-container">
+<span class="tag">Interactive</span>
+</div>
+</div>
+<!-- Existing Card 4 -->
+<div class="gem-card" style="border-top-color: #10b981;">
+<h3>Organic QA & Structure Deduction</h3>
+<p>Perform virtual qualitative analysis for organic functional groups. Run chemical test simulations (Tests A–F), navigate systematic decision trees, and deduce unknown structures.</p>
+<a href="./QA_organic_chem.html" class="gem-link">Launch Organic QA Lab →</a>
+<div class="tag-container">
+<span class="tag-new">NEW</span>
+<span class="tag">Interactive</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<p>&copy; 2026 Science Education Prepared by Mr Leung Ka Yin.</p>
+</footer>
+</body>
+</html>
